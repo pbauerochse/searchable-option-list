@@ -1,3 +1,3 @@
-- bei leerer suche warnhinweis wieder einblenden
 - erlauben bei radio nichts auszuwählen sofern setting dafür gesetzt (a la <option>-- Bitte wählen --</option>)
 - bei radios die darstellung als selectbox und erst wenn active wird das input/suchfeld aktiv um platz zu sparen bei single auswahl
+- generelles styling ohne bootstrap prüfen

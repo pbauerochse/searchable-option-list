@@ -4,15 +4,14 @@
     window.SOL = {
         configuration : {
             texts : {
-                noItemsAvailable: '<div class="sol-no-results">No entries found</div>',
+                noItemsAvailable: 'No entries found',
                 selectAll: 'Select all',
                 selectNone: 'Select none',
                 quickDelete: '&times;'
             },
             classes: {
                 selectAll: null,
-                selectNone: null,
-                noItemsAvailable: null
+                selectNone: null
             },
             useBracketParameters: false,
             showSelectAll: false,
@@ -80,7 +79,8 @@
             this.input = $('<input type="text" />');
             this.caret = $('<div class="sol-caret-container"><b class="caret" /></div>');
             this.selection = $('<div class="sol-selection" />');
-            this.selectionContainer = $('<div class="sol-selection-container" />').append(this.selection);
+            this.noResultsItem = $('<div class="sol-no-results"></div>').html(this.settings.texts.noItemsAvailable).hide();
+            this.selectionContainer = $('<div class="sol-selection-container" />').append(this.noResultsItem).append(this.selection);
 
             if (this.settings.maxHeight) {
                 this.selectionContainer.css('max-height', this.settings.maxHeight);
@@ -182,7 +182,7 @@
             }
 
             if (this.items.length === 0) {
-                this.selectionContainer.html(this.settings.texts.noItemsAvailable);
+                this.noResultsItem.show();
                 return;
             }
 
@@ -230,6 +230,7 @@
                 searchTermLowerCased = (searchTerm || '').toLowerCase();
 
             this.selectionContainer.find('.sol-filtered-search').removeClass('sol-filtered-search');
+            this.noResultsItem.hide();
 
             if (searchTerm && searchTerm.trim().length > 0) {
                 this.findTerms(this.items, searchTermLowerCased);
@@ -258,6 +259,12 @@
                     }
                 }
             });
+
+            if (this.selectionContainer.find('.sol-option:not(.sol-filtered-search)').length === 0) {
+                this.noResultsItem.show();
+            } else {
+                this.noResultsItem.hide();
+            }
         },
 
         registerEvents: function () {
@@ -270,13 +277,13 @@
                         $currentItem = $closestSolContainer.first();
 
                     if (!$closestSolContainer.length) {
-                        $('.sol-container.active').removeClass('active');
+                        // clicked outside of any sol-container
+                        $('.sol-container.active').removeClass('active')
+                            .find('input[type="text"]').val('').trigger('keyup');
                     } else {
-                        $('.sol-container.active').each(function (index, item) {
-                            var $itemToCheck = $(item);
-                            if (!$itemToCheck.is($currentItem)) {
-                                $itemToCheck.removeClass('active');
-                            }
+                        $('.sol-container.active').not($currentItem).each(function (index, item) {
+                            $(item).removeClass('active')
+                                .find('input[type="text"]').val('').trigger('keyup');
                         });
                     }
                 });
@@ -362,10 +369,9 @@
             } else {
                 $uiInput = $('<input type="radio" class="sol-radio" />')
                     .on('change', function () {
-                        sol.selectionContainer.find('input[type="radio"][name="'+inputName+'"]').not($(this)).trigger('sol-deselect');
+                        sol.selectionContainer.find('input[type="radio"][name="' + inputName + '"]').not($(this)).trigger('sol-deselect');
                     })
                     .on('sol-deselect', function () {
-                        console.debug("%o -> %o", $(this), $(this).data('sol-item'));
                         var $myDisplayItem = $(this).data('sol-item').displaySelectionItem;
                         if ($myDisplayItem) {
                             $myDisplayItem.remove();
