@@ -1,0 +1,33 @@
+[
+    {
+        "id": 18,
+        "title":"Produkt A",
+        "ISBN":"978-123-456-7890",
+        "active":true,
+        "availableForSelection":false
+    },
+
+    {
+        "id": 19,
+        "title":"Produkt B",
+        "ISBN":"978-123-456-7890",
+        "active":true,
+        "availableForSelection":true
+    },
+
+    {
+        "id": 20,
+        "title":"Produkt C",
+        "ISBN":"978-123-456-7890",
+        "active":false,
+        "availableForSelection":true
+    },
+
+    {
+        "id": 21,
+        "title":"Produkt D",
+        "ISBN":"978-123-456-7890",
+        "active":false,
+        "availableForSelection":true
+    }
+]
