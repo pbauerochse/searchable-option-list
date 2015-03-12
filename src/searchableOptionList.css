@@ -29,6 +29,7 @@
 }
 
 .sol-input-container>input {
+    background-color: transparent;
 	height: 30px;
 	padding: 0 7px;
 	margin: 0;
@@ -46,6 +47,7 @@
 	-webkit-box-shadow: none;
 	-moz-box-shadow: none;
 	box-shadow: none;
+    outline: none;
 }
 
 .sol-container.active .sol-input-container>input {
@@ -63,6 +65,17 @@
 	position: absolute;
 	top: 13px;
 	left: 6px;
+}
+
+.sol-caret-container b.caret {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 2px;
+    vertical-align: middle;
+    border-top: 4px solid;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent
 }
 
 .sol-selection-container {
