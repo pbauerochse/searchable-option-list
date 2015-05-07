@@ -6,12 +6,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="stylesheet" href="{{ site.baseurl}}/css/styles.css">
+        <link rel="stylesheet" href="{{ site.baseurl}}/css/syntax.css">
         <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
         
         <title>Searchable Option List (jQuery plugin) - {{ page.title }}</title>
     </head>
     <body>
-        <header>           
+        <header id="page-header">
            <nav role="navigation" class="wrapper">
                <span id="brand"><a href="{{ site.baseurl }}/">Searchable Option List</a></span>
                <ul>
@@ -27,14 +28,20 @@
         </header>
        
         <div class="wrapper">
-            <div id="main-content">
-                {{ content }}
+            <div id="main-content-wrapper">
+                <div id="main-content">{{ content }}</div>
             </div>    
             
             <aside>
-                <div style="background: orange">
-                    <p></p>    
+
+                <div class="box">
+                    <header>Links</header>
+                    <ul>
+                        <li><a href="#">Github page</a></li>
+                        <li><a href="#">Download latest version</a></li>
+                    </ul>
                 </div>
+
             </aside>
         </div>
        

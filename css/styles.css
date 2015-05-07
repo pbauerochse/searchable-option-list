@@ -60,12 +60,18 @@ body {
     -webkit-animation-timing-function: linear;
 }
 
+ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
 .wrapper {
     width: 90%;
     margin: 0 5%;
 }
 
-header {
+#page-header {
     background: #f9f9f9;
     border-bottom: 1px solid #ccc;
     padding: 0.7em 0;
@@ -85,9 +91,6 @@ header {
 
 nav ul {
     display: inline-block;
-    padding: 0;
-    margin: 0;
-    list-style: none;
 }
 
 nav ul li {
@@ -106,12 +109,42 @@ nav ul li:not(:last-of-type) {
     margin-right: 2em;
 }
 
-#main-content {
+#main-content-wrapper {
     margin: 2em 0;
 }
 
+#main-content {
+    padding-right: 3em;
+    text-align: justify;
+}
+
+aside {
+    margin: 2em 0;
+}
+
+.box header {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 0.7em;
+    font-size: 110%;
+}
+
 footer {
+    clear: both;
     border-top: 1px solid #eee;
     padding: 0.5em 0;
     font-size: 80%;
+}
+
+@media screen and (min-width: 1000px) {
+
+    aside {
+        float: right;
+        width: 20%;
+    }
+
+    #main-content-wrapper {
+        float: left;
+        width: 80%;
+    }
+
 }
