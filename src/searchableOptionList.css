@@ -45,7 +45,7 @@
 }
 
 .sol-input-container>input:focus {
-	-webkit-box-shadow: none;
+	-webkit-box-shadow: none;se
 	-moz-box-shadow: none;
 	box-shadow: none;
     outline: none;
@@ -184,7 +184,7 @@
 
 .sol-selected-display-item {
     display: inline-block;
-    padding: 5px;
+    padding: 3px 5px;
     border: 1px solid #ccc;
     background: #f7f7f9;
     font-size: 0.9em;
