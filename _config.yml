@@ -1,6 +1,9 @@
 # Dependencies
 markdown:         redcarpet
 highlighter:      pygments
+
+baseurl:	  /searchable-option-list
+
 pages_list:       [
     {
         title: 'Home',
