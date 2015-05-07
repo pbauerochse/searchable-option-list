@@ -1,0 +1,23 @@
+@-ms-viewport {
+  width: device-width;
+}
+
+@viewport {
+  width: device-width;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+html {
+    color: #333;
+    font-size: 1em;
+    line-height: 1.4em;
+}
+
+body {
+    width: 100%;
+    background: #f9f9f9;
+}
