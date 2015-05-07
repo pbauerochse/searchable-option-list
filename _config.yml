@@ -7,7 +7,7 @@ baseurl:	  /searchable-option-list
 pages_list:       [
     {
         title: 'Home',
-        link:  '',
+        link:  'index.html',
         tabId: 'home'
     },
     {

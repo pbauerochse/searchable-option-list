@@ -1,7 +1,7 @@
 ---
 layout: default
-title:  Test
+title:  About
 tabId:  home
 ---
 
-HOME
+# General Home Page

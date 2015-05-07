@@ -74,8 +74,12 @@ header {
 
 #brand {
     display: inline-block;
-    color: #777;
     margin-right: 2em;
+}
+
+#brand a:link, #brand a:visited, #brand a:active, #brand a:hover {
+    text-decoration: none;
+    color: #777;
     font-weight: bold;
 }
 

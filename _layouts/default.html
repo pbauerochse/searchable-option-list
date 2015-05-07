@@ -13,7 +13,7 @@
     <body>
         <header>           
            <nav role="navigation" class="wrapper">
-               <span id="brand">Searchable Option List</span>
+               <span id="brand"><a href="{{ site.baseurl }}/">Searchable Option List</a></span>
                <ul>
                     {% for userpage in site.pages_list %}
                         {% if page.tabId == userpage.tabId %}
