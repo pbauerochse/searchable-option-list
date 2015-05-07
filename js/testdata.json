@@ -1,0 +1,24 @@
+[
+    {
+        "type": "optiongroup",
+        "label": "The Griffins",
+        "children": [
+            { "type": "option", "value": "Peter",  "label": "Peter Griffin"},
+            { "type": "option", "value": "Lois",   "label": "Lois Griffin"},
+            { "type": "option", "value": "Chris",  "label": "Chris Griffin"},
+            { "type": "option", "value": "Meg",    "label": "Meg Griffin"},
+            { "type": "option", "value": "Stewie", "label": "Stewie Griffin"}
+        ]
+    },
+    {
+        "type": "optiongroup",
+        "label": "Peter's Friends",
+        "children": [
+            { "type": "option", "value": "Cleveland", "label": "Cleveland Brown"},
+            { "type": "option", "value": "Joe",       "label": "Joe Swanson"},
+            { "type": "option", "value": "Quagmire",  "label": "Glenn Quagmire"}
+        ]
+    },
+    { "type": "option", "value": "Evil Monkey", "label": "Evil Monkey"},
+    { "type": "option", "value": "Herbert",     "label": "John Herbert"}
+]

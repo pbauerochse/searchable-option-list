@@ -71,6 +71,10 @@ ul {
     margin: 0 5%;
 }
 
+.clearfix {
+    clear: both;
+}
+
 #page-header {
     background: #f9f9f9;
     border-bottom: 1px solid #ccc;
@@ -129,7 +133,6 @@ aside {
 }
 
 footer {
-    clear: both;
     border-top: 1px solid #eee;
     padding: 0.5em 0;
     font-size: 80%;

@@ -10,9 +10,11 @@
         <link rel="stylesheet" href="{{ site.baseurl}}/css/github-markdown.css">
         <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
         
+        <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="{{ site.baseurl}}/js/jquery.toc.js"></script>
+
         {% if page.includeSol %}
             <link rel="stylesheet" href="{{ site.baseurl}}/css/searchableOptionList.min.css">
-            <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
             <script type="text/javascript" src="{{ site.baseurl}}/js/searchableOptionList.min.js"></script>
         {% endif %}
 
@@ -50,6 +52,8 @@
                 </div>
 
             </aside>
+
+            <div class="clearfix"></div>
         </div>
        
         <footer class="wrapper">
