@@ -1,0 +1,20 @@
+# Dependencies
+markdown:         redcarpet
+highlighter:      pygments
+pages_list:       [
+    {
+        title: 'Home',
+        link:  '/',
+        tabId: 'home'
+    },
+    {
+        title: 'Configuration',
+        link:  'configuration.html',
+        tabId: 'configuration'
+    },
+    {
+        title: 'Examples',
+        link:  'examples.html',
+        tabId: 'examples'
+    }
+]

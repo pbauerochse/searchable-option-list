@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="{{ site.baseurl}}/css/styles.css">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+        
+        <title>Searchable Option List (jQuery plugin) - {{ page.title }}</title>
+    </head>
+    <body>
+        <header>           
+           <nav role="navigation" class="wrapper">
+               <span id="brand">Searchable Option List</span>
+               <ul>
+                    {% for userpage in site.pages_list %}
+                        {% if page.tabId == userpage.tabId %}
+                            <li class="active"><a href="{{ userpage.link }}">{{ userpage.title }}</a></li>
+                        {% else %}
+                            <li><a href="{{ userpage.link }}">{{ userpage.title }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+               </ul>
+           </nav>
+        </header>
+       
+        <div class="wrapper">
+            <div id="main-content">
+                {{ content }}
+            </div>    
+            
+            <aside>
+                <div style="background: orange">
+                    <p></p>    
+                </div>
+            </aside>
+        </div>
+       
+        <footer class="wrapper">
+           &copy; {{ site.time | date: '%Y' }}. All rights reserved.
+        </footer>
+    </body>
+</html>
