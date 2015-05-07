@@ -2,11 +2,7 @@
 	<head>
 		<title>Test</title>
 		<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
-<!--		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>-->
 		<script src="../src/searchableOptionList.js"></script>
-
-<!--		<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">-->
-<!--		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">-->
 		<link href="../src/searchableOptionList.css" rel="stylesheet">
 		<link href="test.css" rel="stylesheet">
 	</head>
@@ -28,7 +24,7 @@
                 <div class="row">
                     <div class="col-md-2"><strong>To create this</strong></div>
                     <div class="col-md-10">
-                        <select id="preinitialized" name="htmltest" multiple="multiple" style="width: 250px">
+                        <select id="preinitialized" name="htmltest" multiple="multiple" style="width: 550px">
                             <optgroup label="Gruppe 1" title="Es una grupa con el numéro 1">
                                 <option value="1" title="Subgroup 1">Subgroup 1</option>
                                 <option value="2" title="Subgroup 2">Subgroup 2</option>
@@ -268,6 +264,62 @@
 </pre>
                     </div>
                 </div>
+
+
+                <div class="row">
+                    <div class="col-md-2"><strong>To create this</strong></div>
+                    <div class="col-md-10">
+                        <select id="withNullSelection" name="htmltest" style="width: 250px">
+                            <optgroup label="Gruppe 1" title="Es una grupa con el numéro 1">
+                                <option value="1" title="Subgroup 1">Subgroup 1</option>
+                                <option value="2" title="Subgroup 2">Subgroup 2</option>
+                                <option value="3" title="Subgroup 3">Subgroup 3</option>
+                                <option value="4" title="Subgroup 4">Subgroup 4</option>
+                                <option value="5" title="Subgroup 5">Subgroup 5</option>
+                                <option value="6" title="Subgroup 6">Subgroup 6</option>
+                                <option value="7" title="Subgroup 7">Subgroup 7</option>
+                                <option value="8" title="Subgroup 8">Subgroup 8</option>
+                                <option value="9" title="Subgroup 9">Subgroup 9</option>
+                                <option value="10" title="Subgroup 10">Subgroup 10</option>
+                            </optgroup>
+                            <optgroup label="Gruppe 2" title="Es una grupa con el numéro 2">
+                                <option value="1" title="Subgroup 1">Subgroup 1</option>
+                                <option value="2" title="Subgroup 2">Subgroup 2</option>
+                                <option value="3" title="Subgroup 3">Subgroup 3</option>
+                                <option value="4" title="Subgroup 4">Subgroup 4</option>
+                                <option value="5" title="Subgroup 5">Subgroup 5</option>
+                                <option value="6" title="Subgroup 6">Subgroup 6</option>
+                                <option value="7" title="Subgroup 7">Subgroup 7</option>
+                                <option value="8" title="Subgroup 8">Subgroup 8</option>
+                                <option value="9" title="Subgroup 9">Subgroup 9</option>
+                                <option value="10" title="Subgroup 10">Subgroup 10</option>
+                            </optgroup>
+                            <optgroup label="Gruppe 3" title="Es una grupa con el numéro 3">
+                                <option value="1" title="Subgroup 1">Subgroup 1</option>
+                                <option value="2" title="Subgroup 2">Subgroup 2</option>
+                                <option value="3" title="Subgroup 3">Subgroup 3</option>
+                                <option value="4" title="Subgroup 4">Subgroup 4</option>
+                                <option value="5" title="Subgroup 5">Subgroup 5</option>
+                                <option value="6" title="Subgroup 6">Subgroup 6</option>
+                                <option value="7" title="Subgroup 7">Subgroup 7</option>
+                                <option value="8" title="Subgroup 8">Subgroup 8</option>
+                                <option value="9" title="Subgroup 9">Subgroup 9</option>
+                                <option value="10" title="Subgroup 10">Subgroup 10</option>
+                            </optgroup>
+
+                            <option value="1" title="Tooltip 1">Option 001</option>
+                            <option value="2" title="Tooltip 2">Option 002</option>
+                            <option value="3" title="Tooltip 3">Option 003</option>
+                            <option value="4" title="Tooltip 4">Option 004</option>
+                            <option value="5" title="Tooltip 5">Option 005</option>
+                            <option value="6" title="Tooltip 6">Option 006</option>
+                            <option value="7" title="Tooltip 7">Option 007</option>
+                            <option value="8" title="Tooltip 8">Option 008</option>
+                            <option value="9" title="Tooltip 9">Option 009</option>
+                            <option value="10" title="Tooltip 10" selected="selected">Option 010</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
 			    <hr />
@@ -363,6 +415,8 @@
                     }
                 });
 
+                $('#withNullSelection').searchableOptionList({allowNullSelection: true, maxHeight: '350px',});
+
                 $('#getSelectionTest').on('click', function() {
                     rakete.getSelection().each(function(index, item) {console.log(item)});
                 });
@@ -370,6 +424,7 @@
                 $('#testSerialization').click(function() {
                     console.log($('form').first().serialize());
                 });
+
 
 			});
 		</script>

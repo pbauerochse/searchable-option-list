@@ -16,7 +16,8 @@
             useBracketParameters: false,
             showSelectAll: false,
             showSelection: true,
-            showSelectionBelowList: false
+            showSelectionBelowList: false,
+            allowNullSelection: false
         }
     };
 
@@ -67,7 +68,7 @@
             this.fetchData(function () {
                 sol.registerEvents();
 
-                // unset the original element since we dont need it anymore
+                // remove the original element since we completely replace it
                 sol.element.remove();
                 sol.element = undefined;
             });
@@ -129,6 +130,9 @@
                     .append('<div class="sol-clearfix"></div>');
                 this.selectionContainer.prepend(this.actionButtons);
             }
+
+            // maximum of original <select> width and default <input> width
+            this.input.css('width', Math.max(this.input.outerWidth(false), $(this.element).outerWidth(false)));
 
             if ($.isFunction(this.settings.onRendered)) {
                 this.settings.onRendered.call(this);
@@ -419,7 +423,7 @@
                     .attr('title', item.tooltip)
                     .appendTo(this.showSelectionContainer);
 
-            if (this.useCheckboxes) {
+            if (this.useCheckboxes || this.settings.allowNullSelection) {
                 $('<span class="sol-quick-delete" />')
                     .html(this.settings.texts.quickDelete)
                     .on('click', function () {

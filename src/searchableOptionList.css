@@ -1,6 +1,7 @@
 .sol-container {
 	display: inline-block;
 }
+
 .sol-input-container {
 	border: 1px solid #ccc;
 	background-color: #fff;
@@ -121,7 +122,8 @@
 	margin: 0 10px 2px 0 !important;
 	vertical-align: bottom;
 	position: relative;
-	top: -1px;
+	top: 50%;
+    transform: translateY(-50%);
 	*overflow: hidden;
 }
 
@@ -182,7 +184,7 @@
 
 .sol-selected-display-item {
     display: inline-block;
-    padding: 3px 5px;
+    padding: 5px;
     border: 1px solid #ccc;
     background: #f7f7f9;
     font-size: 0.9em;
@@ -192,15 +194,15 @@
 }
 
 .sol-quick-delete {
-    color: #ccc;
+    color: #777;
     display: inline-block;
-    width: 14px;
     font-weight: bold;
     text-align: center;
+    margin-right: 5px;
 }
 
 .sol-quick-delete:hover {
-    color: #333;
+    color: #111;
     cursor: pointer;
 }
 
