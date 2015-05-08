@@ -7,7 +7,8 @@
                 noItemsAvailable: 'No entries found',
                 selectAll: 'Select all',
                 selectNone: 'Select none',
-                quickDelete: '&times;'
+                quickDelete: '&times;',
+                searchplaceholder: 'Click here to search'
             },
             classes: {
                 selectAll: null,
@@ -86,6 +87,8 @@
             if (this.settings.maxHeight) {
                 this.selectionContainer.css('max-height', this.settings.maxHeight);
             }
+            
+            this.input.attr('placeholder', this.settings.texts.searchplaceholder);
 
             this.inputContainer
                 .append(this.input)
