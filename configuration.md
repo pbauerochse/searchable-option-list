@@ -22,6 +22,7 @@ To better suit your needs, SOL comes with a bunch of options which influence its
 |showSelectAll|`boolean`|`false`|||
 |showSelection|`boolean`|`true`|||
 |showSelectionBelowList|`boolean`|`false`|||
+|allowNullSelection|`boolean`|`false`|||
 
 ## Events
 | Event  | Type | Default | Description | Example |
