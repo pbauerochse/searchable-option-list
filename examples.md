@@ -146,7 +146,49 @@ There are more ways to pass the data to SOL than to use an existing `select`.
 
 ### Initialize empty select with data from array
 
-You can also initialize an empty `<select>` by passing in an JavaScript array with the initial data. This example will result in the same SOL as the optgroup example:
+You can also initialize an empty `<select>` by passing in an JavaScript array with the initial data. The data must be in valid JSON format and comply to this form:
+
+
+#### JSON data format
+{% highlight javascript %}
+
+var aSingleOptionItem = {
+    // required attributes
+    "type":  "option",   
+    "label": "The label that will be displayed",
+    "value": "The value which will be passed to the server when this entry is selected and the form is being submitted",
+    
+    // optional attributes
+    "selected": false,          // true or false, determines whether this entry is preselected
+    "disabled": false,          // true or false, determines whether this entry is changeable
+    "tooltip":  "An optional tooltip which will be shown when the mouse hovers above the entry"
+};
+
+var anOptionGroupWithThreeItems = {
+    // required attributes
+    "type":     "optiongroup",
+    "label":    "The label that will be displayed for this group",
+    "children": [   // the array of child elements for this optiongroup, all children must be of type "option" (see above)
+        { "type": "option", "label": "Another option", "value": "entry-1" },
+        { "type": "option", "label": "And another option", "value": "entry-2" },
+        { "type": "option", "label": "Yet another option", "value": "entry-3" }
+    ],             
+    
+    // optional attributes
+    "disabled": false,          // true or false, set to true to disallow changing of any of the child elements
+    "tooltip":  "An optional tooltip which will be shown when the mouse hovers above the group caption"
+};
+
+var validSolDataArray = [
+    aSingleOptionItem,
+    anOptionGroupWithThreeItems,
+    { "type": "option", "label": "Another option", "value": "entry-8193" },
+    { "type": "option", "label": "Another option", "value": "entry-8193" },
+];
+
+{% endhighlight %}
+
+This example will result in the same SOL as the optgroup example:
 
 {% highlight html %}
 <select id="my-select" name="character"></select>

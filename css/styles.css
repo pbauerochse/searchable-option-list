@@ -51,7 +51,7 @@ html {
 body {
     width: 100%;
     background: #fff;
-    padding-top: 5em;
+    margin-top: 5em;
     
     /* overcome chrome bug for webfonts - http://stackoverflow.com/questions/22011139/google-fonts-are-not-rendering-on-google-chrome */
     -webkit-animation-delay: 0.1s;
