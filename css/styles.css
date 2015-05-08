@@ -121,6 +121,10 @@ nav ul li:not(:last-of-type) {
     text-align: justify;
 }
 
+#main-content ul {
+    list-style: initial;
+}
+
 aside {
     margin: 2em 0;
 }
