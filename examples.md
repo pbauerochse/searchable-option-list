@@ -8,6 +8,49 @@ tabId:  examples
 Examples
 ========
 
+## What you will get
+
+Here is an example of what you will get when you use SOL
+
+<select id="demonstration" name="character0" style="width: 250px" multiple="multiple">
+    <optgroup label="The Griffins">
+        <option value="Peter" selected>Peter Griffin</option>
+        <option value="Lois">Lois Griffin</option>
+        <option value="Chris">Chris Griffin</option>
+        <option value="Meg">Meg Griffin</option>
+        <option value="Stewie">Stewie Griffin</option>
+    </optgroup>
+    <optgroup label="Peter's Friends">
+        <option value="Cleveland">Cleveland Brown</option>    
+        <option value="Joe">Joe Swanson</option>    
+        <option value="Quagmire">Glenn Quagmire</option>    
+    </optgroup>
+    <option value="Evil Monkey">Evil Monkey</option>
+    <option value="Herbert">John Herbert</option>
+    <option value="Adam" selected>Adam West</option>
+    <option value="Buzz Killington">Buzz Killington</option>
+    <option value="Tricia">Tricia Takanawa</option>
+    <option value="Tom">Tom Tucker</option>
+    <option value="Jake">Jake Tucker</option>
+    <option value="Diane">Diane Simmons</option>
+    <option value="Ollie">Ollie Williams</option>
+    <option value="Dr Hartmann">Dr. Elmer Hartmann</option>
+    <option value="Barbara">Barbara Pewterschmidt</option>
+    <option value="Carter">Carter Pewterschmidt</option>
+    <option value="Neil">Neil Goldmann</option>
+    <option value="Mort">Mort Goldmann</option>
+    <option value="Muriel">Muriel Goldmann</option>
+    <option value="Consuela">Consuela</option>
+    <option value="Jillian">Jillian Russel</option>
+    <option value="Phineas and Barnaby" selected>Phineas and Barnaby</option>
+    <option value="Vern and Johnny">Vern and Johnny</option>
+    <option value="Ernie">Ernie The Giant Chicken</option>
+    <option value="Bruce">Bruce</option>
+    <option value="Jeffrey">Jeffrey</option>
+    <option value="Carl">Carl</option>    
+</select>
+
+
 ## Prerequisites
 First of all you need to have jQuery included in your HTML, then you simply include the SOL js file and the SOL stylesheet.
 
@@ -441,6 +484,8 @@ YADDA
 
 <script type="text/javascript">
     $(function() {
+        $('#demonstration').searchableOptionList({ maxHeight: '300px', showSelectAll: true });
+       
         $('.basicSelect').searchableOptionList();
         
         $('#json-data-array-example').searchableOptionList({
