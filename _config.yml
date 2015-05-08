@@ -19,5 +19,10 @@ pages_list:       [
         title: 'Examples',
         link:  'examples.html',
         tabId: 'examples'
+    },
+    {
+        title:    'Download @github',
+        link:     'https://github.com/pbauerochse/searchable-option-list',
+        external: true
     }
 ]

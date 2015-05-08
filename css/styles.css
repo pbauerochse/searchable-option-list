@@ -118,7 +118,6 @@ nav ul li:not(:last-of-type) {
 }
 
 #main-content {
-    padding-right: 3em;
     text-align: justify;
 }
 
@@ -138,16 +137,33 @@ footer {
     font-size: 80%;
 }
 
+#toc .toc-h3 {
+    padding-left: 1em;
+}
+
+#toc .toc-h4 {
+    padding-left: 2em;
+}
+
+#toc .toc-active a {
+    color: #FA8500;
+}
+
 @media screen and (min-width: 1000px) {
 
     aside {
-        float: right;
+        position: fixed;
         width: 20%;
+        right: 5%;
     }
 
     #main-content-wrapper {
         float: left;
         width: 80%;
+    }
+
+    #main-content {
+        padding-right: 3em;
     }
 
 }

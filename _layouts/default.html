@@ -11,7 +11,7 @@
         <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
         
         <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-        <script type="text/javascript" src="{{ site.baseurl}}/js/jquery.toc.js"></script>
+        <script type="text/javascript" src="{{ site.baseurl}}/js/toc.js"></script>
 
         {% if page.includeSol %}
             <link rel="stylesheet" href="{{ site.baseurl}}/css/searchableOptionList.min.css">
@@ -28,6 +28,8 @@
                     {% for userpage in site.pages_list %}
                         {% if page.tabId == userpage.tabId %}
                             <li class="active"><a href="{{ userpage.link }}">{{ userpage.title }}</a></li>
+                        {% else if page.external == true %}
+                            <li><a href="{{ userpage.link }}" target="_blank">{{ userpage.title }}</a></li>
                         {% else %}
                             <li><a href="{{ userpage.link }}">{{ userpage.title }}</a></li>
                         {% endif %}
@@ -37,21 +39,16 @@
         </header>
        
         <div class="wrapper">
+            <aside>
+                <div class="box">
+                    <header>Table of contents</header>
+                    <div id="toc"></div>
+                </div>
+            </aside>
+
             <div id="main-content-wrapper">
                 <div id="main-content" class="markdown-body">{{ content }}</div>
-            </div>    
-            
-            <aside>
-
-                <div class="box">
-                    <header>Links</header>
-                    <ul>
-                        <li><a href="https://github.com/pbauerochse/searchable-option-list" target="_blank">Github page</a></li>
-<!--                        <li><a href="#">Download latest version</a></li>-->
-                    </ul>
-                </div>
-
-            </aside>
+            </div>
 
             <div class="clearfix"></div>
         </div>
@@ -59,5 +56,15 @@
         <footer class="wrapper">
            &copy; {{ site.time | date: '%Y' }}. All rights reserved.
         </footer>
+
+        <script type="text/javascript">
+            $(function() {
+                $('#toc').toc({
+                    'selectors': 'h2,h3,h4',
+                    'container': '#main-content',
+                    'smoothScrolling': true
+                });
+            });
+        </script>
     </body>
 </html>
