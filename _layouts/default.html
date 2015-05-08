@@ -28,7 +28,7 @@
                     {% for userpage in site.pages_list %}
                         {% if page.tabId == userpage.tabId %}
                             <li class="active"><a href="{{ userpage.link }}">{{ userpage.title }}</a></li>
-                        {% else if page.external == true %}
+                        {% elsif userpage.external == true %}
                             <li><a href="{{ userpage.link }}" target="_blank">{{ userpage.title }}</a></li>
                         {% else %}
                             <li><a href="{{ userpage.link }}">{{ userpage.title }}</a></li>
