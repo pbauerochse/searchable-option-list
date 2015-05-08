@@ -51,6 +51,7 @@ html {
 body {
     width: 100%;
     background: #fff;
+    padding-top: 5em;
     
     /* overcome chrome bug for webfonts - http://stackoverflow.com/questions/22011139/google-fonts-are-not-rendering-on-google-chrome */
     -webkit-animation-delay: 0.1s;
@@ -76,6 +77,11 @@ ul {
 }
 
 #page-header {
+    z-index: 9999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     background: #f9f9f9;
     border-bottom: 1px solid #ccc;
     padding: 0.7em 0;
