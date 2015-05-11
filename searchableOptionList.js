@@ -145,7 +145,9 @@
             }
 
             // maximum of original <select> width and default <input> width
-            this.input.css('width', Math.max(this.input.outerWidth(false), $(this.element).outerWidth(false)));
+            var selectWidth = Math.max(this.input.outerWidth(false), $(this.element).outerWidth(false));
+            this.input.css('width', selectWidth);
+            this.selectionContainer.css('width', (selectWidth + 50) * 1.2);    // 120%
 
             if ($.isFunction(this.settings.onRendered)) {
                 this.settings.onRendered.call(this);
