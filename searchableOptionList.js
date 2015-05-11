@@ -1,3 +1,13 @@
+/*
+ * SOL - Searchable Option List jQuery plugin
+ * Version 1.0.0
+ * https://pbauerochse.github.io/searchable-option-list/
+ *
+ * Copyright 2015, Patrick Bauerochse
+ *
+ * Licensed under the MIT license:
+ * http://www.opensource.org/licenses/MIT
+ */
 (function ($, window, document) {
     'use strict';
 
