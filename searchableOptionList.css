@@ -83,11 +83,10 @@
 	display: none;
 	position: absolute;
 	top: 100%;
-	left: 0;
+	left: -1;
 	float: left;
 	width: 120%;
 	background: #fff;
-/*	padding: 3px 10px;*/
 	border: 1px solid #ddf;
 	z-index: 99999;
 	background-clip: padding-box;
@@ -96,7 +95,6 @@
 	border-top-left-radius: 0;
 	-webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
 	box-shadow: 0 6px 12px rgba(0,0,0,.175);
-    overflow: auto;
 }
 
 .sol-container.active .sol-selection-container {
@@ -104,27 +102,32 @@
 }
 
 .sol-option {
-    padding: 0 20px;
+    padding: 5px 10px;
 	display: block;
+}
+
+.sol-option:hover {
+    background: #0088CC;
+    color: #fff;
 }
 
 .sol-label {
 	display: block;
-	padding: 0 0 0 15px !important;
-	text-indent: -15px;
+    position: relative;
+}
+
+.sol-label-text {
+    padding-left: 20px;
+    line-height: 1.2em;
 }
 
 .sol-checkbox, .sol-radio {
+    position: absolute;
 	width: 13px !important;
 	height: 13px !important;
 	padding: 0 !important;
-    padding-top: 3px;
-	margin: 0 10px 0 0 !important;
-	vertical-align: bottom;
-	position: relative;
-	top: 50%;
-    transform: translateY(-50%);
-	*overflow: hidden;
+	margin: 0 !important;
+	top: 4px;
 }
 
 .sol-optiongroup {
@@ -157,22 +160,29 @@
 }
 
 .sol-action-buttons {
+    line-height: 20px;
     color: #555;
     background: #eee;
-    padding: 5px;
-    margin-bottom: 5px;
-    border-top: 1px solid #ccc;
+    padding: 10px;
     border-bottom: 1px solid #ccc;
+}
+
+.sol-action-buttons a {
+    text-decoration: none;
+    color: #0088CC;
+    border-bottom: 1px solid transparent;
+}
+
+.sol-action-buttons a:hover {
+    border-bottom: 1px solid #0088CC;
 }
 
 .sol-select-all {
     float: left;
-    padding-left: 10px;
 }
 
 .sol-deselect-all {
     float: right;
-    padding-right: 10px;
 }
 
 .sol-clearfix {
@@ -205,4 +215,8 @@
 
 .sol-current-selection {
     padding: 5px 0;
+}
+
+.sol-selection {
+    overflow: auto;
 }

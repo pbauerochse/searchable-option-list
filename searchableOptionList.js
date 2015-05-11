@@ -95,7 +95,7 @@
             this.selectionContainer = $('<div class="sol-selection-container" />').append(this.noResultsItem).append(this.selection);
 
             if (this.settings.maxHeight) {
-                this.selectionContainer.css('max-height', this.settings.maxHeight);
+                this.selection.css('max-height', this.settings.maxHeight);
             }
             
             this.input.attr('placeholder', this.settings.texts.searchplaceholder);
@@ -403,10 +403,13 @@
                 .data('sol-item', item)
                 .val(item.value);
 
+            var $labelText = $('<div class="sol-label-text" />')
+                    .html(item.label);
+
             var $label = $('<label class="sol-label" />')
                     .attr('title', item.tooltip)
-                    .html(item.label)
-                    .prepend($uiInput),
+                    .append($uiInput)
+                    .append($labelText),
 
                 $entry = $('<div class="sol-option" />')
                     .append($label);
