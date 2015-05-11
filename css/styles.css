@@ -159,6 +159,10 @@ footer {
     color: #FA8500;
 }
 
+.sol-action-buttons a:hover {
+    text-decoration: none !important;
+}
+
 @media screen and (min-width: 1000px) {
 
     aside {
