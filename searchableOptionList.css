@@ -45,7 +45,7 @@
 }
 
 .sol-input-container>input:focus {
-	-webkit-box-shadow: none;se
+	-webkit-box-shadow: none;
 	-moz-box-shadow: none;
 	box-shadow: none;
     outline: none;
@@ -140,9 +140,6 @@
     padding: 0 5px;
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
-}
-
-.sol-optiongroup:last {
 }
 
 .sol-optiongroup.disabled {
