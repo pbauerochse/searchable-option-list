@@ -81,10 +81,10 @@
 
 .sol-selection-container {
 	display: none;
-	position: fixed;
-	top: inherit;
-	left: inherit;
-    margin-left: -1px;
+	position: absolute;
+	top: 100%;
+	left: -1px;
+    width: 120%;
 	float: left;
 	background: #fff;
 	border: 1px solid #ddf;
