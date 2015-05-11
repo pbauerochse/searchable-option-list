@@ -83,7 +83,7 @@
 	display: none;
 	position: absolute;
 	top: 100%;
-	left: -1;
+	left: -1px;
 	float: left;
 	width: 120%;
 	background: #fff;
