@@ -289,7 +289,6 @@
             var sol = this,
                 positionContainerFunction = function () {
                     var posY = Math.floor(sol.input.offset().top) - Math.floor($(window).scrollTop()) + Math.floor(sol.input.outerHeight());
-                    console.log("container vs input: %s vs %s", sol.inputContainer.outerHeight(), sol.input.outerHeight());
                     sol.selectionContainer
                         .css('top', Math.floor(posY))
                         .css('left', Math.floor(sol.input.offset().left - 1))
