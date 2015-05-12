@@ -28,7 +28,16 @@
             showSelectAll: false,
             showSelection: true,
             showSelectionBelowList: false,
-            allowNullSelection: false
+            allowNullSelection: false,
+            scrollContainer: undefined,
+            onScroll: function (sol) {
+                var posY = Math.floor(sol.input.offset().top) - Math.floor(sol.settings.scrollContainer.scrollTop()) + Math.floor(sol.input.outerHeight());
+
+                sol.selectionContainer
+                    .css('top', Math.floor(posY))
+                    .css('left', Math.floor(sol.input.offset().left - 1))
+                    .css('width', Math.ceil((sol.input.outerWidth() + 20) * 1.2));
+            }
         }
     };
 
@@ -62,6 +71,10 @@
         this.settings = $.extend(true, {}, window.SOL.configuration, DEFAULT_OPTIONS, options);
         this.items = [];
         this.useCheckboxes = element.prop('multiple');
+
+        if (!this.settings.scrollContainer) {
+            this.settings.scrollContainer = $(window);
+        }
 
         this.init();
     }
@@ -287,21 +300,19 @@
 
         registerEvents: function () {
             var sol = this,
-                positionContainerFunction = function () {
-                    var posY = Math.floor(sol.input.offset().top) - Math.floor($(window).scrollTop()) + Math.floor(sol.input.outerHeight());
-                    sol.selectionContainer
-                        .css('top', Math.floor(posY))
-                        .css('left', Math.floor(sol.input.offset().left - 1))
-                        .css('width', Math.ceil((sol.input.outerWidth() + 20) * 1.2));
+                scrollFunction = function () {
+                    // delegate to settings function
+                    // and pass in self as parameter
+                    sol.settings.onScroll.call(sol, sol);
                 };
 
             sol.container
                 .on('sol-closed', function() {
-                    $(document).unbind('scroll', positionContainerFunction);
+                    sol.settings.scrollContainer.unbind('scroll', scrollFunction);
                 })
                 .on('sol-opened', function() {
-                    positionContainerFunction.call(this);
-                    $(document).bind('scroll', positionContainerFunction);
+                    scrollFunction.call(sol, sol);
+                    sol.settings.scrollContainer.bind('scroll', scrollFunction);
                 });
 
 
