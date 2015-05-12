@@ -8,7 +8,7 @@
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/MIT
  */
-(function ($, window, document) {
+;(function ($, window, document) {
     'use strict';
 
     window.SOL = {
@@ -29,15 +29,7 @@
             showSelection: true,
             showSelectionBelowList: false,
             allowNullSelection: false,
-            scrollContainer: undefined,
-            onScroll: function (sol) {
-                var posY = Math.floor(sol.input.offset().top) - Math.floor(sol.settings.scrollContainer.scrollTop()) + Math.floor(sol.input.outerHeight());
-
-                sol.selectionContainer
-                    .css('top', Math.floor(posY))
-                    .css('left', Math.floor(sol.input.offset().left - 1))
-                    .css('width', Math.ceil((sol.input.outerWidth() + 20) * 1.2));
-            }
+            scrollContainer: undefined
         }
     };
 
@@ -63,7 +55,19 @@
             data: DEFAULT_DATATYPE,
             maxHeight: null,
             converter: null,
-            onRendered: null
+            onRendered: null,
+            onInitialized: null,
+            onScroll: function (sol) {
+                var posY = Math.floor(sol.input.offset().top) - Math.floor(sol.settings.scrollContainer.scrollTop()) + Math.floor(sol.input.outerHeight());
+
+                sol.selectionContainer
+                    .css('top', Math.floor(posY))
+                    .css('left', Math.floor(sol.input.offset().left - 1))
+                    .css('width', Math.ceil((sol.input.outerWidth() + 20) * 1.2));
+            },
+            onShown: null,
+            onHidden: null,
+            onChange: null
         };
 
     function SearchableOptionList(element, options) {
@@ -95,6 +99,10 @@
                 // remove the original element since we completely replace it
                 sol.element.remove();
                 sol.element = undefined;
+
+                if ($.isFunction(sol.settings.onInitialized)) {
+                    sol.settings.onInitialized.call(this);
+                }
             });
         },
 
@@ -308,9 +316,17 @@
 
             sol.container
                 .on('sol-closed', function() {
+                    if ($.isFunction(sol.settings.onHidden)) {
+                        sol.settings.onHidden.call(sol, sol);
+                    }
+
                     sol.settings.scrollContainer.unbind('scroll', scrollFunction);
                 })
                 .on('sol-opened', function() {
+                    if ($.isFunction(sol.settings.onShown)) {
+                        sol.settings.onShown.call(sol, sol);
+                    }
+
                     scrollFunction.call(sol, sol);
                     sol.settings.scrollContainer.bind('scroll', scrollFunction);
                 });
@@ -448,6 +464,11 @@
             }
 
             $uiInput
+                .on('change', function () {
+                    if ($.isFunction(sol.settings.onChange)) {
+                        sol.settings.onChange.call(sol, sol);
+                    }
+                })
                 .prop('checked', item.selected)
                 .prop('disabled', item.disabled)
                 .attr('name', inputName)
@@ -529,15 +550,21 @@
         selectAll: function () {
             this.selectionContainer
                 .find('input[type="checkbox"]:not([disabled], :checked)')
-                .prop('checked', true)
-                .trigger('change');
+                .prop('checked', true);
+
+            if ($.isFunction(this.settings.onChange)) {
+                this.settings.onChange.call(this, this);
+            }
         },
 
         deselectAll: function () {
             this.selectionContainer
                 .find('input[type="checkbox"]:not([disabled]):checked')
-                .prop('checked', false)
-                .trigger('change');
+                .prop('checked', false);
+
+            if ($.isFunction(this.settings.onChange)) {
+                this.settings.onChange.call(this, this);
+            }
         },
 
         getSelection: function () {
