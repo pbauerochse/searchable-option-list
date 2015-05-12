@@ -289,7 +289,9 @@
             var sol = this,
                 positionContainerFunction = function () {
                     var posY = sol.input.offset().top - $(window).scrollTop() + sol.input.outerHeight();
-                    sol.selectionContainer.css('top', posY + 'px');
+                    sol.selectionContainer
+                        .css('top', posY + 'px')
+                        .css('width', (sol.input.outerWidth() + 20) * 1.2);
                 };
 
             sol.container
