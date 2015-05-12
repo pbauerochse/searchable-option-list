@@ -286,7 +286,21 @@
         },
 
         registerEvents: function () {
-            var sol = this;
+            var sol = this,
+                positionContainerFunction = function () {
+                    var posY = sol.input.offset().top - $(window).scrollTop() + sol.input.outerHeight();
+                    sol.selectionContainer.css('top', posY + 'px');
+                };
+
+            sol.container
+                .on('sol-closed', function() {
+                    $(document).unbind('scroll', positionContainerFunction);
+                })
+                .on('sol-opened', function() {
+                    positionContainerFunction.call(this);
+                    $(document).bind('scroll', positionContainerFunction);
+                });
+
 
             // global events nur einmal
             if (!window[EVENTS_KEY]) {
@@ -296,12 +310,20 @@
 
                     if (!$closestSolContainer.length) {
                         // clicked outside of any sol-container
-                        $('.sol-container.active').removeClass('active')
-                            .find('input[type="text"]').val('').trigger('keyup');
+                        $('.sol-container.sol-active')
+                            .removeClass('sol-active')
+                            .trigger('sol-closed')
+                            .find('input[type="text"]')
+                            .val('')
+                            .trigger('keyup');
                     } else {
-                        $('.sol-container.active').not($currentItem).each(function (index, item) {
-                            $(item).removeClass('active')
-                                .find('input[type="text"]').val('').trigger('keyup');
+                        $('.sol-container.sol-active').not($currentItem).each(function (index, item) {
+                            $(item)
+                                .removeClass('sol-active')
+                                .trigger('sol-closed')
+                                .find('input[type="text"]')
+                                .val('')
+                                .trigger('keyup');
                         });
                     }
                 });
@@ -311,12 +333,26 @@
             // element events mehrfach
             if (!$.data(this.element, EVENTS_KEY)) {
                 this.caret.on('click', function () {
-                    sol.container.toggleClass('active');
+                    sol
+                        .container
+                        .toggleClass('sol-active');
+
+                    if (sol.container.hasClass('sol-active')) {
+                        sol.container.trigger('sol-opened');
+                    } else {
+                        sol.container.trigger('sol-closed');
+                    }
                 });
 
                 this.input
                     .on('focus', function () {
-                        sol.container.addClass('active');
+                        sol.container.addClass('sol-active');
+
+                        if (sol.container.hasClass('sol-active')) {
+                            sol.container.trigger('sol-opened');
+                        } else {
+                            sol.container.trigger('sol-closed');
+                        }
                     })
                     .on('keyup', function (e) {
                         var keyCode = e.keyCode;

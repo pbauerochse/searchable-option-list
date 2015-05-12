@@ -18,7 +18,7 @@
 	transition: border linear .2s, box-shadow linear .2s;
 }
 
-.sol-container.active .sol-input-container {
+.sol-container.sol-active .sol-input-container {
 	position: relative;
 	border-color: rgba(82, 168, 236, 0.8);
 	outline: 0;
@@ -51,7 +51,7 @@
     outline: none;
 }
 
-.sol-container.active .sol-input-container>input {
+.sol-container.sol-active .sol-input-container>input {
     border-bottom-right-radius: 0;
 }
 
@@ -84,7 +84,6 @@
 	position: absolute;
 	top: 100%;
 	left: -1px;
-    width: 120%;
 	float: left;
 	background: #fff;
 	border: 1px solid #ddf;
@@ -93,12 +92,16 @@
 	border: 1px solid rgba(0, 0, 0, .15);
 	border-radius: 4px;
 	border-top-left-radius: 0;
+    border-bottom-right-radius: 0;
 	-webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
 	box-shadow: 0 6px 12px rgba(0,0,0,.175);
 }
 
-.sol-container.active .sol-selection-container {
+.sol-container.sol-active .sol-selection-container {
 	display: block;
+    position: fixed;
+    left: inherit;
+    top: inherit;
 }
 
 .sol-option {
@@ -165,6 +168,9 @@
     background: #eee;
     padding: 10px;
     border-bottom: 1px solid #ccc;
+    -webkit-border-top-right-radius: 4px;
+	-moz-border-top-right-radius: 4px;
+	border-top-right-radius: 4px;
 }
 
 .sol-action-buttons a {
