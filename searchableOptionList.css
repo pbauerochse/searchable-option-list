@@ -5,7 +5,7 @@
 .sol-input-container {
 	border: 1px solid #ccc;
 	background-color: #fff;
-	height: 30px;
+	height: 32px;
 	line-height: 30px;
 	display: inline-block;
 	-webkit-border-radius: 4px;
@@ -135,7 +135,7 @@
 }
 
 .sol-optiongroup {
-	background: #f7f7f9;
+	background: #f7f7f7;
     padding-bottom: 1px;
 }
 
@@ -226,4 +226,8 @@
 
 .sol-selection {
     overflow: auto;
+}
+
+.sol-selection div:first-child.sol-optiongroup > .sol-optiongroup-label {
+    border-top: none;
 }
