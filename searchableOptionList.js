@@ -497,6 +497,8 @@
                         } else {
                             item.displaySelectionItem.remove();
                         }
+
+                        sol.settings.onScroll.call(sol, sol);
                     });
 
                 if (item.selected) {
