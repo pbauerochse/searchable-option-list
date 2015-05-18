@@ -8,7 +8,7 @@
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/MIT
  */
-;(function ($, window, document) {
+; (function ($, window, document) {
     'use strict';
 
     window.SOL = {
@@ -315,14 +315,14 @@
                 };
 
             sol.container
-                .on('sol-closed', function() {
+                .on('sol-closed', function () {
                     if ($.isFunction(sol.settings.onHidden)) {
                         sol.settings.onHidden.call(sol, sol);
                     }
 
                     sol.settings.scrollContainer.unbind('scroll', scrollFunction);
                 })
-                .on('sol-opened', function() {
+                .on('sol-opened', function () {
                     if ($.isFunction(sol.settings.onShown)) {
                         sol.settings.onShown.call(sol, sol);
                     }
@@ -465,8 +465,9 @@
 
             $uiInput
                 .on('change', function () {
+                    $(this).trigger('sol-change');
                     if ($.isFunction(sol.settings.onChange)) {
-                        sol.settings.onChange.call(sol, sol);
+                        sol.settings.onChange.call(sol, sol, $(this));
                     }
                 })
                 .prop('checked', item.selected)
@@ -489,13 +490,14 @@
             item.displayElement = $entry;
 
             if (this.settings.showSelection) {
-                $uiInput.on('change', function () {
-                    if ($(this).prop('checked')) {
-                        sol.addSelectionDisplayItem(item, $uiInput);
-                    } else {
-                        item.displaySelectionItem.remove();
-                    }
-                });
+                $uiInput
+                    .on('sol-change', function () {
+                        if ($(this).prop('checked')) {
+                            sol.addSelectionDisplayItem(item, $uiInput);
+                        } else {
+                            item.displaySelectionItem.remove();
+                        }
+                    });
 
                 if (item.selected) {
                     this.addSelectionDisplayItem(item, $uiInput);
@@ -515,7 +517,9 @@
                 $('<span class="sol-quick-delete" />')
                     .html(this.settings.texts.quickDelete)
                     .on('click', function () {
-                        $uiInput.prop('checked', false);
+                        $uiInput
+                            .prop('checked', false)
+                            .trigger('change');
                         $displaySelectionItem.remove();
                     })
                     .prependTo($displaySelectionItem);
@@ -548,22 +552,24 @@
         },
 
         selectAll: function () {
-            this.selectionContainer
+            var $changedInputs = this.selectionContainer
                 .find('input[type="checkbox"]:not([disabled], :checked)')
-                .prop('checked', true);
+                .prop('checked', true)
+                .trigger('sol-change');
 
             if ($.isFunction(this.settings.onChange)) {
-                this.settings.onChange.call(this, this);
+                this.settings.onChange.call(this, this, $changedInputs);
             }
         },
 
         deselectAll: function () {
-            this.selectionContainer
+            var $changedInputs = this.selectionContainer
                 .find('input[type="checkbox"]:not([disabled]):checked')
-                .prop('checked', false);
+                .prop('checked', false)
+                .trigger('sol-change');
 
             if ($.isFunction(this.settings.onChange)) {
-                this.settings.onChange.call(this, this);
+                this.settings.onChange.call(this, this, $changedInputs);
             }
         },
 
@@ -573,7 +579,7 @@
 
         addErrorLabel: function (message) {
             if (!this.container) {
-                alert('Error: this.container not set yet. This is a bug in the plugin and needs to be fixed');
+                window.alert('Error: this.container not set yet. This is a bug in the plugin and needs to be fixed');
             } else {
                 this.container.append($('<div style="color: red; font-weight: bold;" />').html(message));
             }
