@@ -516,15 +516,17 @@
                     .appendTo(this.showSelectionContainer);
 
             if (this.useCheckboxes || this.settings.allowNullSelection) {
-                $('<span class="sol-quick-delete" />')
-                    .html(this.settings.texts.quickDelete)
-                    .on('click', function () {
-                        $uiInput
-                            .prop('checked', false)
-                            .trigger('change');
-                        $displaySelectionItem.remove();
-                    })
-                    .prependTo($displaySelectionItem);
+                if (!$uiInput.prop('disabled')) {
+                    $('<span class="sol-quick-delete" />')
+                        .html(this.settings.texts.quickDelete)
+                        .on('click', function () {
+                            $uiInput
+                                .prop('checked', false)
+                                .trigger('change');
+                            $displaySelectionItem.remove();
+                        })
+                        .prependTo($displaySelectionItem);
+                }
             }
 
             item.displaySelectionItem = $displaySelectionItem;
