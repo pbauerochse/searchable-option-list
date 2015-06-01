@@ -614,7 +614,7 @@
                     .attr('title', item.tooltip)
                     .appendTo(this.showSelectionContainer);
 
-                if (this.useCheckboxes || this.settings.allowNullSelection) {
+                if ((this.useCheckboxes || this.settings.allowNullSelection) && !$uiInput.prop('disabled')) {
                     $('<span class="sol-quick-delete" />')
                         .html(this.settings.texts.quickDelete)
                         .on('click', function () {
