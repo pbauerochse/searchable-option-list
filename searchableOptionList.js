@@ -346,6 +346,8 @@
             // element events
             if (!$.data(this.element, EVENTS_KEY)) {
 
+
+
                 this.caret.on('click', function () {
                     sol
                         .container
@@ -367,18 +369,6 @@
                         } else {
                             sol.container.trigger('sol-closed');
                         }
-                    })
-                    .on('keyup', function (e) {
-                        var keyCode = e.keyCode;
-                        if (keyCode === 27) {
-                            sol.input.val('');
-                        }
-
-                        if (keyCode === 16 || keyCode === 17 || keyCode === 18 || keyCode === 20) {
-                            return;
-                        }
-
-                        sol.applySearch();
                     });
 
                 this.container
@@ -396,6 +386,75 @@
 
                         scrollFunction.call(sol, sol);
                         sol.settings.scrollContainer.bind('scroll', scrollFunction);
+                    })
+                    .on('keydown', function (e) {
+                        var keyCode = e.keyCode;
+
+                        // event handling for keyboard navigation
+                        // only when there are results to be shown
+                        if (!sol.noResultsItem.is(':visible')) {
+
+                            if (keyCode === 40 || keyCode === 38) {
+                                // arrow down or arrow up
+                                sol.keyboardNavigationMode = true;
+
+                                var $currentHighlightedOption = sol.selection.find('.sol-option.keyboard-selection'),
+                                    $nextHighlightedOption,
+                                    directionUp = keyCode === 38;
+
+                                if (directionUp) {
+                                    $nextHighlightedOption = $currentHighlightedOption.prev('.sol-option:visible');
+                                    if ($nextHighlightedOption.length === 0) {
+                                        $nextHighlightedOption = sol.selection.find('.sol-option:visible:last');
+                                    }
+                                } else {
+                                    $nextHighlightedOption = $currentHighlightedOption.next('.sol-option:visible');
+                                    if ($nextHighlightedOption.length === 0) {
+                                        $nextHighlightedOption = sol.selection.find('.sol-option:visible:first');
+                                    }
+                                }
+
+                                $currentHighlightedOption.removeClass('keyboard-selection');
+                                $nextHighlightedOption.addClass('keyboard-selection');
+
+                                sol.selection.scrollTop(sol.selection.scrollTop() + $nextHighlightedOption.position().top);
+                            } else if (sol.keyboardNavigationMode === true && keyCode === 32) {
+                                // toggle current selected item with space bar
+                                $currentHighlightedOption = sol.selection.find('.sol-option.keyboard-selection input');
+
+                                $currentHighlightedOption
+                                    .prop('checked', !$currentHighlightedOption.prop('checked'))
+                                    .trigger('sol-change');
+
+                                // don't add the space character to the input field if it is focused
+                                e.preventDefault();
+                                return false;
+                            }
+                        }
+                    })
+                    .on('keyup', function (e) {
+                        var keyCode = e.keyCode;
+
+                        if (keyCode === 27) {
+                            // escape key
+                            if (sol.keyboardNavigationMode === true) {
+                                sol.keyboardNavigationMode = false;
+                                sol.selectionContainer.find('.sol-option.keyboard-selection').removeClass('keyboard-selection');
+                                sol.selection.scrollTop(0);
+                            } else if (sol.input.val() === '') {
+                                // trigger closing of container
+                                sol.caret.trigger('click');
+                                sol.input.trigger('blur');
+                            } else {
+                                // reset input
+                                sol.input.val('');
+                            }
+                        } else if (keyCode === 16 || keyCode === 17 || keyCode === 18 || keyCode === 20) {
+                            // special events like shift and control
+                            return;
+                        }
+
+                        sol.applySearch();
                     });
 
                 $.data(this.element, EVENTS_KEY, new Date().getTime());

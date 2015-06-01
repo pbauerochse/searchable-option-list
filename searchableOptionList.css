@@ -110,7 +110,7 @@
 	display: block;
 }
 
-.sol-option:hover {
+.sol-option:hover, .sol-option.keyboard-selection {
     background: #0088CC;
     color: #fff;
 }
@@ -226,6 +226,7 @@
 
 .sol-selection {
     overflow: auto;
+    position: relative;
 }
 
 .sol-selection div:first-child.sol-optiongroup > .sol-optiongroup-label {
