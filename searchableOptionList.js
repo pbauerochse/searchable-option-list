@@ -308,31 +308,14 @@
 
         registerEvents: function () {
             var sol = this,
+                $form = this.input.parents('form').first(),
                 scrollFunction = function () {
                     // delegate to settings function
                     // and pass in self as parameter
                     sol.settings.onScroll.call(sol, sol);
                 };
 
-            sol.container
-                .on('sol-closed', function () {
-                    if ($.isFunction(sol.settings.onHidden)) {
-                        sol.settings.onHidden.call(sol, sol);
-                    }
-
-                    sol.settings.scrollContainer.unbind('scroll', scrollFunction);
-                })
-                .on('sol-opened', function () {
-                    if ($.isFunction(sol.settings.onShown)) {
-                        sol.settings.onShown.call(sol, sol);
-                    }
-
-                    scrollFunction.call(sol, sol);
-                    sol.settings.scrollContainer.bind('scroll', scrollFunction);
-                });
-
-
-            // global events nur einmal
+            // register global events just once
             if (!window[EVENTS_KEY]) {
                 $(document).on('click', function (e) {
                     var $closestSolContainer = $(e.target).closest('.sol-container'),
@@ -360,8 +343,9 @@
                 window[EVENTS_KEY] = new Date().getTime();
             }
 
-            // element events mehrfach
+            // element events
             if (!$.data(this.element, EVENTS_KEY)) {
+
                 this.caret.on('click', function () {
                     sol
                         .container
@@ -397,7 +381,59 @@
                         sol.applySearch();
                     });
 
+                this.container
+                    .on('sol-closed', function () {
+                        if ($.isFunction(sol.settings.onHidden)) {
+                            sol.settings.onHidden.call(sol, sol);
+                        }
+
+                        sol.settings.scrollContainer.unbind('scroll', scrollFunction);
+                    })
+                    .on('sol-opened', function () {
+                        if ($.isFunction(sol.settings.onShown)) {
+                            sol.settings.onShown.call(sol, sol);
+                        }
+
+                        scrollFunction.call(sol, sol);
+                        sol.settings.scrollContainer.bind('scroll', scrollFunction);
+                    });
+
                 $.data(this.element, EVENTS_KEY, new Date().getTime());
+            }
+
+            // form events
+            if ($form && $form.length === 1 && !$form.data(EVENTS_KEY)) {
+                var resetFunction = function () {
+                    $form.find('.sol-option input').each(function (index, item) {
+                        var $item = $(item),
+                            initialState = $item.data('sol-initial-state');
+
+                        if ($item.prop('checked') !== initialState) {
+                            $item
+                                .prop('checked', initialState)
+                                .trigger('sol-change');
+                        }
+                    });
+                };
+
+                $form.on('reset', function (event) {
+                    // unfortunately the reset event gets fired _before_
+                    // the inputs are actually reset. The only possibility
+                    // to overcome this is to set an interval to execute
+                    // own scripts some time after the actual reset event
+
+                    // before fields are actually reset by the browser
+                    // needed to reset newly checked fields
+                    resetFunction.call(sol);
+
+                    // timeout for selection after form reset
+                    // needed to reset previously checked fields
+                    setTimeout(function () {
+                        resetFunction.call(sol);
+                    }, 100);
+                });
+
+                $form.data(EVENTS_KEY, new Date().getTime());
             }
         },
 
@@ -470,6 +506,7 @@
                         sol.settings.onChange.call(sol, sol, $(this));
                     }
                 })
+                .data('sol-initial-state', item.selected)
                 .prop('checked', item.selected)
                 .prop('disabled', item.disabled)
                 .attr('name', inputName)
@@ -510,24 +547,28 @@
         },
 
         addSelectionDisplayItem: function (item, $uiInput) {
-            var $displaySelectionItem = $('<div class="sol-selected-display-item" />')
+            var $existingDisplayItem = this.showSelectionContainer.find('[data-sol-item-val="' + $uiInput.val() + '"]');
+
+            if ($existingDisplayItem.length === 0) {
+                var $displaySelectionItem = $('<div class="sol-selected-display-item" data-sol-item-val="' + $uiInput.val() + '" />')
                     .html(item.label)
                     .attr('title', item.tooltip)
                     .appendTo(this.showSelectionContainer);
 
-            if (this.useCheckboxes || this.settings.allowNullSelection) {
-                $('<span class="sol-quick-delete" />')
-                    .html(this.settings.texts.quickDelete)
-                    .on('click', function () {
-                        $uiInput
-                            .prop('checked', false)
-                            .trigger('change');
-                        $displaySelectionItem.remove();
-                    })
-                    .prependTo($displaySelectionItem);
-            }
+                if (this.useCheckboxes || this.settings.allowNullSelection) {
+                    $('<span class="sol-quick-delete" />')
+                        .html(this.settings.texts.quickDelete)
+                        .on('click', function () {
+                            $uiInput
+                                .prop('checked', false)
+                                .trigger('change');
+                            $displaySelectionItem.remove();
+                        })
+                        .prependTo($displaySelectionItem);
+                }
 
-            item.displaySelectionItem = $displaySelectionItem;
+                item.displaySelectionItem = $displaySelectionItem;
+            }
         },
 
         renderOptionGroup: function (index, item, $container, attachAndCreateElements) {
