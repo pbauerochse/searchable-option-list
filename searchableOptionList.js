@@ -318,8 +318,8 @@
             // register global events just once
             if (!window[EVENTS_KEY]) {
                 $(document).on('click', function (e) {
-                    var $closestSolContainer = $(e.target).closest('.sol-container'),
-                        $currentItem = $closestSolContainer.first();
+                    var $closestSolContainer = $(e.target).closest('.sol-input-container'),
+                        $currentItem = $closestSolContainer.first().parent();
 
                     if (!$closestSolContainer.length) {
                         // clicked outside of any sol-container
