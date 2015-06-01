@@ -346,8 +346,6 @@
             // element events
             if (!$.data(this.element, EVENTS_KEY)) {
 
-
-
                 this.caret.on('click', function () {
                     sol
                         .container
@@ -573,7 +571,7 @@
                 .val(item.value);
 
             var $labelText = $('<div class="sol-label-text" />')
-                    .html(item.label);
+                    .html(item.label.trim().length === 0 ? '&nbsp;' : item.label);
 
             var $label = $('<label class="sol-label" />')
                     .attr('title', item.tooltip)
