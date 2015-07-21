@@ -238,6 +238,8 @@
 
             if ($form && $form.length === 1 && !$form.data(this.WINDOW_EVENTS_KEY)) {
                 var resetFunction = function () {
+                    var $changedItems = [];
+
                     $form.find('.sol-option input').each(function (index, item) {
                         var $item = $(item),
                             initialState = $item.data('sol-item').selected;
@@ -245,9 +247,14 @@
                         if ($item.prop('checked') !== initialState) {
                             $item
                                 .prop('checked', initialState)
-                                .trigger('sol-change');
+                                .trigger('sol-change', true);
+                            $changedItems.push($item);
                         }
                     });
+
+                    if ($changedItems.length > 0 && $.isFunction(self.config.events.onChange)) {
+                        self.config.events.onChange.call(self, self, $changedItems);
+                    }
                 };
 
                 $form.on('reset', function (event) {
@@ -595,8 +602,8 @@
             }
 
             $inputElement
-                .on('change', function () {
-                    $(this).trigger('sol-change');
+                .on('change', function (event, skipCallback) {
+                    $(this).trigger('sol-change', skipCallback);
                 })
                 .on('sol-change', function (event, skipCallback) {
                     self._selectionChange($(this), skipCallback);
@@ -769,7 +776,7 @@
                 var $changedInputs = this.$selectionContainer
                     .find('input[type="checkbox"]:not([disabled], :checked)')
                     .prop('checked', true)
-                    .trigger('sol-change', true);
+                    .trigger('change', true);
 
                 this.close();
                 
@@ -784,7 +791,7 @@
                 var $changedInputs = this.$selectionContainer
                     .find('input[type="checkbox"]:not([disabled]):checked')
                     .prop('checked', false)
-                    .trigger('sol-change', true);
+                    .trigger('change', true);
 
                 this.close();
                 
