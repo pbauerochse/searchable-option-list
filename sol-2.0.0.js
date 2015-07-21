@@ -49,6 +49,7 @@
         // default option values
         defaults : {
             data : undefined,
+            name : undefined,           // name attribute, can also be set as name="" attribute on original element or data-sol-name=""
 
             texts : {
                 noItemsAvailable: 'No entries found',
@@ -65,20 +66,29 @@
                 onClose: undefined,
                 onChange: undefined,
                 onScroll: function () {
-                    var posY = Math.floor(this.$input.offset().top) - Math.floor(this.config.scrollTarget.scrollTop()) + Math.floor(this.$input.outerHeight()),
-                        width = Math.ceil((this.$input.outerWidth() + 20) * 1.2);
 
-                    if (this.$originalElement.css('display') === 'block') {
-                        width = Math.ceil(this.$input.outerWidth() + this.$caret.outerWidth(false));
+                    var posY = Math.floor(this.$input.offset().top) - Math.floor(this.config.scrollTarget.scrollTop()) + Math.floor(this.$input.outerHeight()),
+                        selectionContainerWidth = this.$container.outerWidth(false) - parseInt(this.$selectionContainer.css('border-left-width'), 10) - parseInt(this.$selectionContainer.css('border-right-width'), 10);
+
+                    if (this.$container.css('display') !== 'block') {
+                        // container has a certain width
+                        // make selection container a bit wider
+                        selectionContainerWidth = Math.ceil(selectionContainerWidth * 1.2);
+                    } else {
+                        // no border radius on top
                         this.$selectionContainer
-                            .css('border-top-left-radius', 0)
-                            .css('border-top-right-radius', 0);
+                            .css('border-top-right-radius', 'initial');
+
+                        if (this.$actionButtons) {
+                            this.$actionButtons
+                                .css('border-top-right-radius', 'initial');
+                        }
                     }
 
                     this.$selectionContainer
                         .css('top', Math.floor(posY))
-                        .css('left', Math.floor(this.$input.offset().left - 1))
-                        .css('width', width);
+                        .css('left', Math.floor(this.$container.offset().left))
+                        .css('width', selectionContainerWidth);
                 }
             },
 
@@ -95,6 +105,7 @@
 
         // initialize the plugin
         init: function () {
+            this.config = $.extend(true, {}, this.defaults, this.options, this.metadata);
 
             var originalName = this._getNameAttribute();
             if (!originalName) {
@@ -102,7 +113,6 @@
                 return;
             }
 
-            this.config = $.extend(true, {}, this.defaults, this.options, this.metadata);
             this.config.multiple = this.config.multiple || this.$originalElement.attr('multiple');
 
             if (!this.config.scrollTarget) {
@@ -119,13 +129,14 @@
             this.$originalElement
                 .data(this.DATA_KEY, this)
                 .removeAttr('name')
-                .data('sol-name', originalName);
+                .data('sol-name', originalName)
+                .hide();
 
             return this;
         },
 
         _getNameAttribute: function () {
-            return this.$originalElement.attr('name') || this.$originalElement.data('sol-name');
+            return this.config.name || this.$originalElement.data('sol-name') || this.$originalElement.attr('name');
         },
 
         // shows an error label
@@ -144,7 +155,7 @@
                 $(document).click(function (event) {
                     // if clicked inside a sol element close all others
                     // else close all sol containers
-                    var $closestSolContainer = $(event.target).closest('.sol-input-container'),
+                    var $closestSolContainer = $(event.target).closest('.sol-inner-container'),
                         $clickedWithinThisSolContainer = $closestSolContainer.first().parent('.sol-container');
 
                     $('.sol-container')
@@ -177,20 +188,21 @@
             this.$noResultsItem = $('<div class="sol-no-results"/>').html(this.config.texts.noItemsAvailable).hide();
 
             this.$caret = $('<div class="sol-caret-container"><b class="caret"/></div>').click(function () { self.toggle(); });
-            var $inputContainer = $('<div class="sol-input-container"/>').append(this.$input).append(this.$caret);
+            var $inputContainer = $('<div class="sol-input-container"/>').append(this.$input),
+                $innerContainer = $('<div class="sol-inner-container"/>').append($inputContainer).append(this.$caret);
 
             this.$selection = $('<div class="sol-selection"/>');
             this.$selectionContainer = $('<div class="sol-selection-container"/>').append(this.$noResultsItem).append(this.$selection);
-            this.$container = $('<div class="sol-container"/>').data(this.DATA_KEY, this).append($inputContainer).insertBefore(this.$originalElement);
+            this.$container = $('<div class="sol-container"/>').data(this.DATA_KEY, this).append($innerContainer).insertBefore(this.$originalElement);
 
-            $inputContainer.append(this.$selectionContainer);
+            $innerContainer.append(this.$selectionContainer);
 
             // add selected items display container
             this.$showSelectionContainer = $('<div class="sol-current-selection"/>');
             if (this.config.showSelectionBelowList) {
-                this.$showSelectionContainer.insertAfter($inputContainer);
+                this.$showSelectionContainer.insertAfter($innerContainer);
             } else {
-                this.$showSelectionContainer.insertBefore($inputContainer);
+                this.$showSelectionContainer.insertBefore($innerContainer);
             }
 
             // multiple values selectable
@@ -211,13 +223,11 @@
                 this.$selection.css('max-height', this.config.maxHeight);
             }
 
-            var inputWidth = Math.max(this.$input.outerWidth(false), this.$originalElement.outerWidth(false));
-            if (this.$originalElement.css('display') === 'block') {
-                // block element spanning the whole width -> subtract space for caret and additional spacing
-                inputWidth = inputWidth - this.$caret.outerWidth(false) - parseInt($inputContainer.css('border-left-width'), 10) - parseInt($inputContainer.css('border-right-width'), 10);
+            if (this.$originalElement.css('display') !== 'block') {
+                this.$container
+                    .css('display', this.$originalElement.css('display'))
+                    .css('width',   this.$originalElement.outerWidth(false));
             }
-
-            this.$input.css('width', inputWidth);
 
             if ($.isFunction(this.config.events.onRendered)) {
                 this.config.events.onRendered.call(this, this);
@@ -587,8 +597,8 @@
                 .on('change', function () {
                     $(this).trigger('sol-change');
                 })
-                .on('sol-change', function () {
-                    self._selectionChange($(this));
+                .on('sol-change', function (event, skipCallback) {
+                    self._selectionChange($(this), skipCallback);
                 })
                 .data('sol-item', solOption)
                 .prop('checked', solOption.selected)
@@ -632,16 +642,24 @@
             this.$selection.append($groupItem);
         },
 
-        _selectionChange: function ($changeItem) {
+        _selectionChange: function ($changeItem, skipCallback) {
             if ($changeItem.prop('checked')) {
                 this._addSelectionDisplayItem($changeItem);
             } else {
                 this._removeSelectionDisplayItem($changeItem);
             }
 
-            this.config.scrollTarget.trigger('scroll');
+            if (this.config.multiple) {
+                // update position of selection container
+                // to allow selecting more entries
+                this.config.scrollTarget.trigger('scroll');
+            } else {
+                // only one option selectable
+                // close selection container
+                this.close();
+            }
 
-            if ($.isFunction(this.config.events.onChange)) {
+            if (!skipCallback && $.isFunction(this.config.events.onChange)) {
                 this.config.events.onChange.call(this, this, $changeItem);
             }
         },
@@ -729,11 +747,15 @@
         close: function () {
             if (this.isOpen()) {
                 this._setKeyBoardNavigationMode(false);
+
                 
                 this.$container.removeClass('sol-active');
                 this.config.scrollTarget.unbind('scroll', this.internalScrollWrapper);
                 $(window).off('resize');
+
+                // reset search on close
                 this.$input.val('');
+                this._applySearchTermFilter();
 
                 if ($.isFunction(this.config.events.onClose)) {
                     this.config.events.onClose.call(this, this);
@@ -746,7 +768,7 @@
                 var $changedInputs = this.$selectionContainer
                     .find('input[type="checkbox"]:not([disabled], :checked)')
                     .prop('checked', true)
-                    .trigger('sol-change');
+                    .trigger('sol-change', true);
 
                 this.close();
                 
@@ -761,7 +783,7 @@
                 var $changedInputs = this.$selectionContainer
                     .find('input[type="checkbox"]:not([disabled]):checked')
                     .prop('checked', false)
-                    .trigger('sol-change');
+                    .trigger('sol-change', true);
 
                 this.close();
                 
