@@ -68,9 +68,9 @@
                 onScroll: function () {
 
                     var posY = Math.floor(this.$input.offset().top) - Math.floor(this.config.scrollTarget.scrollTop()) + Math.floor(this.$input.outerHeight()),
-                        selectionContainerWidth = this.$container.outerWidth(false) - parseInt(this.$selectionContainer.css('border-left-width'), 10) - parseInt(this.$selectionContainer.css('border-right-width'), 10);
+                        selectionContainerWidth = this.$innerContainer.outerWidth(false) - parseInt(this.$selectionContainer.css('border-left-width'), 10) - parseInt(this.$selectionContainer.css('border-right-width'), 10);
 
-                    if (this.$container.css('display') !== 'block') {
+                    if (this.$innerContainer.css('display') !== 'block') {
                         // container has a certain width
                         // make selection container a bit wider
                         selectionContainerWidth = Math.ceil(selectionContainerWidth * 1.2);
@@ -99,7 +99,6 @@
             allowNullSelection: false,
             closeOnActionButtons: false,
             scrollTarget: undefined,
-            maxDisplayItems: undefined,
             maxHeight: undefined
         },
 
@@ -188,21 +187,19 @@
             this.$noResultsItem = $('<div class="sol-no-results"/>').html(this.config.texts.noItemsAvailable).hide();
 
             this.$caret = $('<div class="sol-caret-container"><b class="caret"/></div>').click(function () { self.toggle(); });
-            var $inputContainer = $('<div class="sol-input-container"/>').append(this.$input),
-                $innerContainer = $('<div class="sol-inner-container"/>').append($inputContainer).append(this.$caret);
+            var $inputContainer = $('<div class="sol-input-container"/>').append(this.$input);
 
+            this.$innerContainer = $('<div class="sol-inner-container"/>').append($inputContainer).append(this.$caret);
             this.$selection = $('<div class="sol-selection"/>');
-            this.$selectionContainer = $('<div class="sol-selection-container"/>').append(this.$noResultsItem).append(this.$selection);
-            this.$container = $('<div class="sol-container"/>').data(this.DATA_KEY, this).append($innerContainer).insertBefore(this.$originalElement);
-
-            $innerContainer.append(this.$selectionContainer);
+            this.$selectionContainer = $('<div class="sol-selection-container"/>').append(this.$noResultsItem).append(this.$selection).appendTo(this.$innerContainer);
+            this.$container = $('<div class="sol-container"/>').data(this.DATA_KEY, this).append(this.$innerContainer).insertBefore(this.$originalElement);
 
             // add selected items display container
             this.$showSelectionContainer = $('<div class="sol-current-selection"/>');
             if (this.config.showSelectionBelowList) {
-                this.$showSelectionContainer.insertAfter($innerContainer);
+                this.$showSelectionContainer.insertAfter(this.$innerContainer);
             } else {
-                this.$showSelectionContainer.insertBefore($innerContainer);
+                this.$showSelectionContainer.insertBefore(this.$innerContainer);
             }
 
             // multiple values selectable
@@ -224,7 +221,7 @@
             }
 
             if (this.$originalElement.css('display') !== 'block') {
-                this.$container
+                this.$innerContainer
                     .css('display', this.$originalElement.css('display'))
                     .css('width',   this.$originalElement.outerWidth(false));
             }
