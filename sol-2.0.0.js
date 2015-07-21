@@ -275,9 +275,12 @@
 
             // text input events
             this.$input
-                .focus(function () { self.open(); });
+                .focus(function () { self.open(); })
+                .on('input', function () {
+                    self._applySearchTermFilter();
+                });
 
-            // navigation
+            // keyboard navigation
             this.$container
                 .on('keydown', function (e) {
                     var keyCode = e.keyCode;
@@ -288,33 +291,31 @@
 
                         var $currentHighlightedOption,
                             $nextHighlightedOption,
-                            directionUp;
+                            directionValue,
+                            preventDefault = false,
+                            $allVisibleOptions = self.$selection.find('.sol-option:visible');
 
                         if (keyCode === 40 || keyCode === 38) {
                             // arrow up or down to select an item
                             self._setKeyBoardNavigationMode(true);
-                            
-                            $currentHighlightedOption = self.$selection.find('.sol-option.keyboard-selection');
-                            directionUp = keyCode === 38;
 
-                            if (directionUp) {
-                                $nextHighlightedOption = $currentHighlightedOption.prevAll('.sol-option:visible').first();
-                                if ($nextHighlightedOption.length === 0) {
-                                    // we reached the top of the list
-                                    $nextHighlightedOption = self.$selection.find('.sol-option:visible:last');
-                                }
-                            } else {
-                                $nextHighlightedOption = $currentHighlightedOption.nextAll('.sol-option:visible').first();
-                                // if last is selected jump back to start
-                                if ($nextHighlightedOption.length === 0) {
-                                    $nextHighlightedOption = self.$selection.find('.sol-option:visible:first');
-                                }
+                            $currentHighlightedOption = self.$selection.find('.sol-option.keyboard-selection');
+                            directionValue = (keyCode === 38) ? -1 : 1;   // negative for up, positive for down
+
+                            var indexOfNextHighlightedOption = $allVisibleOptions.index($currentHighlightedOption) + directionValue;
+                            if (indexOfNextHighlightedOption < 0) {
+                                indexOfNextHighlightedOption = $allVisibleOptions.length - 1;
+                            } else if (indexOfNextHighlightedOption >= $allVisibleOptions.length) {
+                                indexOfNextHighlightedOption = 0;
                             }
 
                             $currentHighlightedOption.removeClass('keyboard-selection');
-                            $nextHighlightedOption.addClass('keyboard-selection');
+                            $nextHighlightedOption = $($allVisibleOptions[indexOfNextHighlightedOption])
+                                .addClass('keyboard-selection');
 
                             self.$selection.scrollTop(self.$selection.scrollTop() + $nextHighlightedOption.position().top);
+
+                            preventDefault = true;
                         } else if (self.keyboardNavigationMode === true && keyCode === 32) {
                             // toggle current selected item with space bar
                             $currentHighlightedOption = self.$selection.find('.sol-option.keyboard-selection input');
@@ -322,11 +323,14 @@
                                 .prop('checked', !$currentHighlightedOption.prop('checked'))
                                 .trigger('change');
 
-                            // don't add the space character to the input field if it is focused
+                            preventDefault = true;
+                        }
+
+                        if (preventDefault) {
+                            // dont trigger any events in the input
                             e.preventDefault();
                             return false;
                         }
-
                     }
                 })
                 .on('keyup', function (e) {
@@ -341,15 +345,13 @@
                             self.$caret.trigger('click');
                             self.$input.trigger('blur');
                         } else {
-                            // reset input
-                            self.$input.val('');
+                            // reset input and result filter
+                            self.$input.val('').trigger('input');
                         }
                     } else if (keyCode === 16 || keyCode === 17 || keyCode === 18 || keyCode === 20) {
                         // special events like shift and control
                         return;
                     }
-
-                    self._applySearchTermFilter();
                 });
         },
         
@@ -392,6 +394,9 @@
             }
 
             var self = this;
+
+            // reset keyboard navigation mode when applying new filter
+            this._setKeyBoardNavigationMode(false);
 
             $.each(dataArray, function (index, item) {
                 if (item.type === 'option') {
@@ -587,7 +592,6 @@
                     })
                     .on('sol-deselect', function () {
                         // remove display selection item
-                        // TODO in this radio button case only one item is visible so maybe just replace the content?
                         // TODO also better show it inline instead of above or below to save space
                         self._removeSelectionDisplayItem($(this));
                     });
