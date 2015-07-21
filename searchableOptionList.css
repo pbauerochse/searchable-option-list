@@ -110,7 +110,7 @@
 	display: block;
 }
 
-.sol-option:hover, .sol-option.keyboard-selection {
+.sol-selection:not(.sol-keyboard-navigation) .sol-option:hover, .sol-option.keyboard-selection {
     background: #0088CC;
     color: #fff;
 }
@@ -167,7 +167,7 @@
     line-height: 20px;
     color: #555;
     background: #eee;
-    padding: 10px;
+    padding: 7px 10px;
     border-bottom: 1px solid #ccc;
     -webkit-border-top-right-radius: 4px;
 	-moz-border-top-right-radius: 4px;
@@ -212,7 +212,8 @@
     display: inline-block;
     font-weight: bold;
     text-align: center;
-    margin-right: 5px;
+    padding-right: 5px;
+    padding-left: 1px;
 }
 
 .sol-quick-delete:hover {

@@ -111,8 +111,8 @@
 
             this._registerWindowEventsIfNeccessary();
             this._initializeUiElements();
-            this._initializeData();
             this._initializeInputEvents();
+            this._initializeData();
 
             // take original form element out of form submission
             // by removing the name attribute
@@ -220,7 +220,7 @@
             this.$input.css('width', inputWidth);
 
             if ($.isFunction(this.config.events.onRendered)) {
-                this.config.events.onRendered.call(this);
+                this.config.events.onRendered.call(this, this);
             }
         },
 
@@ -282,9 +282,8 @@
 
                         if (keyCode === 40 || keyCode === 38) {
                             // arrow up or down to select an item
-                            self.keyboardNavigationMode = true;
-                            self.$selection.addClass('sol-keyboard-navigation');
-
+                            self._setKeyBoardNavigationMode(true);
+                            
                             $currentHighlightedOption = self.$selection.find('.sol-option.keyboard-selection');
                             directionUp = keyCode === 38;
 
@@ -326,10 +325,7 @@
                     if (keyCode === 27) {
                         // escape key
                         if (self.keyboardNavigationMode === true) {
-                            self.keyboardNavigationMode = false;
-                            self.$selection.removeClass('sol-keyboard-navigation');
-                            self.$selectionContainer.find('.sol-option.keyboard-selection').removeClass('keyboard-selection');
-                            self.$selection.scrollTop(0);
+                            self._setKeyBoardNavigationMode(false);
                         } else if (self.$input.val() === '') {
                             // trigger closing of container
                             self.$caret.trigger('click');
@@ -345,6 +341,22 @@
 
                     self._applySearchTermFilter();
                 });
+        },
+        
+        _setKeyBoardNavigationMode: function (keyboardNavigationOn) {
+            
+            if (keyboardNavigationOn) {
+                // on
+                this.keyboardNavigationMode = true;
+                this.$selection.addClass('sol-keyboard-navigation');
+            } else {
+                // off
+                this.keyboardNavigationMode = false;
+                this.$selection.find('.sol-option.keyboard-selection')
+                this.$selection.removeClass('sol-keyboard-navigation');
+                this.$selectionContainer.find('.sol-option.keyboard-selection').removeClass('keyboard-selection');
+                this.$selection.scrollTop(0);
+            }
         },
 
         _applySearchTermFilter: function () {
@@ -534,6 +546,10 @@
                     return;
                 }
             });
+            
+            if ($.isFunction(this.config.events.onInitialized)) {
+                this.config.events.onInitialized.call(this, this, solItems);
+            }
         },
 
         _renderOption: function (solOption, $optionalTargetContainer) {
@@ -712,6 +728,8 @@
 
         close: function () {
             if (this.isOpen()) {
+                this._setKeyBoardNavigationMode(false);
+                
                 this.$container.removeClass('sol-active');
                 this.config.scrollTarget.unbind('scroll', this.internalScrollWrapper);
                 $(window).off('resize');
@@ -730,6 +748,8 @@
                     .prop('checked', true)
                     .trigger('sol-change');
 
+                this.close();
+                
                 if ($.isFunction(this.config.events.onChange)) {
                     this.config.events.onChange.call(this, this, $changedInputs);
                 }
@@ -743,6 +763,8 @@
                     .prop('checked', false)
                     .trigger('sol-change');
 
+                this.close();
+                
                 if ($.isFunction(this.config.events.onChange)) {
                     this.config.events.onChange.call(this, this, $changedInputs);
                 }
@@ -756,6 +778,8 @@
 
     // jquery plugin boiler plate code
     SearchableOptionList.defaults = SearchableOptionList.prototype.defaults;
+    window.SearchableOptionList = SearchableOptionList;
+    
     $.fn.searchableOptionList = function (options) {
         var result = [];
         this.each(function () {
