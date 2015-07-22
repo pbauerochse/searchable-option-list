@@ -97,9 +97,9 @@
             showSelectAll: false,
             showSelectionBelowList: false,
             allowNullSelection: false,
-            closeOnActionButtons: false,
             scrollTarget: undefined,
-            maxHeight: undefined
+            maxHeight: undefined,
+            converter: undefined
         },
 
         // initialize the plugin
