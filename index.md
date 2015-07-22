@@ -18,3 +18,5 @@ Searchable Option List (SOL) is a jQuery plugin which replaces your regular HTML
 - easy to use multi select (no <kbd>Ctrl</kbd> press needed)
 - fully stylable with CSS
 
+[Check it out for yourself](examples.html)
+
