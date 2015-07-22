@@ -50,6 +50,8 @@ Here is an example of what you will get when you use SOL
     <option value="Carl">Carl</option>    
 </select>
 
+You may also use the up and down arrow key to navigate to a certain item and toggle the selection state by hitting the space bar.
+
 
 ## Prerequisites
 First of all you need to have jQuery included in your HTML, then you simply include the SOL js file and the SOL stylesheet.
