@@ -674,11 +674,13 @@
 
         _addSelectionDisplayItem: function ($changedItem) {
             var solOptionItem = $changedItem.data('sol-item'),
-                $existingDisplayItem = solOptionItem.displaySelectionItem;
+                $existingDisplayItem = solOptionItem.displaySelectionItem,
+                $displayItemText;
 
             if (!$existingDisplayItem) {
+                $displayItemText = $('<span class="sol-selected-display-item-text" />').html(solOptionItem.label);
                 $existingDisplayItem = $('<div class="sol-selected-display-item"/>')
-                    .html(solOptionItem.label)
+                    .append($displayItemText)
                     .attr('title', solOptionItem.tooltip)
                     .appendTo(this.$showSelectionContainer);
 
