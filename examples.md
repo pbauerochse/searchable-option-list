@@ -59,7 +59,7 @@ First of all you need to have jQuery included in your HTML, then you simply incl
 <head>
     <link rel="stylesheet" href="searchableOptionList.css">
     <script type="text/javascript" src="jQuery.js"></script>
-    <script type="text/javascript" src="searchableOptionList.js"></script>
+    <script type="text/javascript" src="sol-{VERSION}.js"></script>
 </head>
 {% endhighlight %}
 
@@ -189,52 +189,12 @@ There are more ways to pass the data to SOL than to use an existing `select`.
 
 ### Initialize empty select with data from array
 
-You can also initialize an empty `<select>` by passing in an JavaScript array with the initial data. The data must be in valid JSON format and comply to this form:
-
-
-#### JSON data format
-{% highlight javascript %}
-
-var aSingleOptionItem = {
-    // required attributes
-    "type":  "option",   
-    "label": "The label that will be displayed",
-    "value": "The value which will be passed to the server when this entry is selected and the form is being submitted",
-    
-    // optional attributes
-    "selected": false,          // true or false, determines whether this entry is preselected
-    "disabled": false,          // true or false, determines whether this entry is changeable
-    "tooltip":  "An optional tooltip which will be shown when the mouse hovers above the entry"
-};
-
-var anOptionGroupWithThreeItems = {
-    // required attributes
-    "type":     "optiongroup",
-    "label":    "The label that will be displayed for this group",
-    "children": [   // the array of child elements for this optiongroup, all children must be of type "option" (see above)
-        { "type": "option", "label": "Another option", "value": "entry-1" },
-        { "type": "option", "label": "And another option", "value": "entry-2" },
-        { "type": "option", "label": "Yet another option", "value": "entry-3" }
-    ],             
-    
-    // optional attributes
-    "disabled": false,          // true or false, set to true to disallow changing of any of the child elements
-    "tooltip":  "An optional tooltip which will be shown when the mouse hovers above the group caption"
-};
-
-var validSolDataArray = [
-    aSingleOptionItem,
-    anOptionGroupWithThreeItems,
-    { "type": "option", "label": "Another option", "value": "entry-8193" },
-    { "type": "option", "label": "Another option", "value": "entry-8193" },
-];
-
-{% endhighlight %}
+You may initialize SOL from any HTML element by passing in an JavaScript array with the initial data. The data must be in valid [SOL JSON data format](configuration.html#data-format). In that case you also need to specify the `name` option by setting the `data-sol-name="character"` attribute. You also could just pass in the name as an option value.
 
 This example will result in the same SOL as the optgroup example:
 
 {% highlight html %}
-<select id="my-select" name="character"></select>
+<div id="my-div" data-sol-name="character"></div>
 
 <script type="text/javascript">
     $(function() {
@@ -270,7 +230,29 @@ This example will result in the same SOL as the optgroup example:
 
 Here is the proof:
 
-<select id="json-data-array-example" name="character4"></select>
+<div id="json-data-array-example" data-sol-name="character4"></div>
+
+Note, that SOL now stretches over the full width of the content area. This is because we used a block element (div) to initialize SOL. SOL automatically uses the same width the original element had.
+
+### Initialize empty select with data returned from a function
+
+If you need more control you may also pass in a function which then has to return the data to initialize SOL. This enables you to process data retrieved from an url before passing it on to SOL
+
+{% highlight html %}
+<select id="my-select" name="character"></select>
+
+<script type="text/javascript">
+    $(function() {
+        $('#my-select').searchableOptionList({
+            data: function () {
+                // do what you have to do to get the valid SOL data
+                var dataInSolFormat = loadDataFromWhereverYouWant();                
+                return dataInSolFormat;
+            }
+        });
+    });
+</script>
+{% endhighlight %}
 
 ### Initialize empty select from a remote URL
 
@@ -288,26 +270,31 @@ If you provide an url the data will be loaded from that url via an ajax.get call
 </script>
 {% endhighlight %}
 
-### Initialize empty select with data returned from a function
+### Converting data
 
-If you need more control you may also pass in a function which then has to return the data to initialize SOL. This enables you to process data retrieved from an url before passing it on to SOL
+Sometimes you might want to load the data from a remote URL but that data is not in valid SOL format. In that case you might want to add a converter function which then converts the data to proper SOL format like this:
 
 {% highlight html %}
-<select id="my-select" name="character"></select>
+<div id="my-select" name="character" style="width: 250px"></div>
 
 <script type="text/javascript">
     $(function() {
         $('#my-select').searchableOptionList({
-            data: function (self) {
-                // get and convert the data from the server
-                var rawData = loadDataFromServer();
-                var dataInSolFormat = convertToSolFormat(rawData);
-                return dataInSolFormat;
+            data: 'some-url-that-does-not-return-sol-format.json',
+            converter: function (sol, rawDataFromUrl) {
+                var solData = [];
+                
+                // do whatever you have to do
+                // to convert rawDataFromUrl to
+                // valid SOL data format
+                
+                return solData;
             }
         });
     });
 </script>
 {% endhighlight %}
+
 
 ## Options
 
@@ -480,7 +467,195 @@ See the difference for yourself
 
 ### Overriding the default labels
 
-YADDA
+The texts used in SOL are completely customizable. You may set the texts for all SOL elements globally or on a per element basis.
+
+{% highlight html %}
+<select id="my-default-text-select" name="character" multiple><!-- options ommited for the example --></select>
+<select id="my-custom-text-select" name="character2" multiple><!-- options ommited for the example --></select>
+
+<script type="text/javascript">
+$(function() {
+    
+    // set texts globally for all SOL like this
+    // these are all available text options
+    // also the values shown here are the default labels
+    SearchableOptionList.defaults.texts.noItemsAvailable: 'No entries found';
+    SearchableOptionList.defaults.texts.selectAll: 'Select all';
+    SearchableOptionList.defaults.texts.selectNone: 'Select none';
+    SearchableOptionList.defaults.texts.quickDelete: '&times;';
+    SearchableOptionList.defaults.texts.searchplaceholder: 'Click here to search';
+   
+    $('#my-default-text-select').searchableOptionList({showSelectAll: true});
+    $('#my-custom-text-select').searchableOptionList({
+        showSelectAll: true,
+        // set texts for this SOL only, overriding the defaults
+        texts: {
+            noItemsAvailable: 'Go on, nothing to see here',
+            selectAll: 'Get em all',
+            selectNone: 'Nah',
+            quickDelete: 'Kick',
+            searchplaceholder: 'Giggity giggity...'
+        }
+    });
+});    
+</script>
+{% endhighlight %}
+
+<select id="default-texts" name="character9" multiple>
+    <optgroup label="The Griffins">
+        <option value="Peter">Peter Griffin</option>
+        <option value="Lois" selected>Lois Griffin</option>
+        <option value="Chris">Chris Griffin</option>
+        <option value="Meg">Meg Griffin</option>
+        <option value="Stewie">Stewie Griffin</option>
+    </optgroup>    
+    <optgroup label="Peter's Friends">
+        <option value="Cleveland">Cleveland Brown</option>    
+        <option value="Joe" selected>Joe Swanson</option>    
+        <option value="Quagmire">Glenn Quagmire</option>    
+    </optgroup>    
+    <option value="Evil Monkey">Evil Monkey</option>
+    <option value="Herbert">John Herbert</option>
+</select>
+
+<select id="custom-texts" name="character10" multiple>   
+    <optgroup label="The Griffins">
+        <option value="Peter">Peter Griffin</option>
+        <option value="Lois" selected>Lois Griffin</option>
+        <option value="Chris">Chris Griffin</option>
+        <option value="Meg">Meg Griffin</option>
+        <option value="Stewie">Stewie Griffin</option>
+    </optgroup>    
+    <optgroup label="Peter's Friends">
+        <option value="Cleveland">Cleveland Brown</option>    
+        <option value="Joe" selected>Joe Swanson</option>    
+        <option value="Quagmire">Glenn Quagmire</option>    
+    </optgroup>    
+    <option value="Evil Monkey">Evil Monkey</option>
+    <option value="Herbert">John Herbert</option>
+</select>
+
+
+## Proper positioning of the option popup
+
+Note: this is an advanced technique you most propably won't ever need. But if you ever need it, you might want to take a closer look at the internal structure of SOL to know which elements exist in the `this` scope.
+
+The position of the option popup needs to be recalculated every time the popup is opened or the position of the searchable option list changes (e.g. when scrolling). This is due to the fact, that the popup needs to be positioned fixed on the screen to break out of parent containers. If the popup wasn't to be positioned like that, half of it could be cut off due to the container constraints.
+
+Here is an example to show you what I mean: The red border is a parent container with a fixed height (for example it could be a modal popup). For the SOL popup to break out of the container and display itself beyond the parent's bounds, we need to position it fixed on the screen:
+
+<p id="positionshowcase">
+Click any SOL to see the difference<br>
+
+<select name="character12" multiple>   
+    <optgroup label="The Griffins">
+        <option value="Peter">Peter Griffin</option>
+        <option value="Lois">Lois Griffin</option>
+        <option value="Chris">Chris Griffin</option>
+        <option value="Meg">Meg Griffin</option>
+        <option value="Stewie">Stewie Griffin</option>
+    </optgroup>
+    <optgroup label="Peter's Friends">
+        <option value="Cleveland">Cleveland Brown</option>    
+        <option value="Joe">Joe Swanson</option>    
+        <option value="Quagmire">Glenn Quagmire</option>    
+    </optgroup>
+    <option value="Evil Monkey">Evil Monkey</option>
+    <option value="Herbert">John Herbert</option>
+</select>    
+
+<select name="character13" multiple>   
+    <optgroup label="The Griffins">
+        <option value="Peter">Peter Griffin</option>
+        <option value="Lois">Lois Griffin</option>
+        <option value="Chris">Chris Griffin</option>
+        <option value="Meg">Meg Griffin</option>
+        <option value="Stewie">Stewie Griffin</option>
+    </optgroup>
+    <optgroup label="Peter's Friends">
+        <option value="Cleveland">Cleveland Brown</option>    
+        <option value="Joe">Joe Swanson</option>    
+        <option value="Quagmire">Glenn Quagmire</option>    
+    </optgroup>
+    <option value="Evil Monkey">Evil Monkey</option>
+    <option value="Herbert">John Herbert</option>
+</select>  
+</p>
+
+Unfortunately fixed elements can not automatically be positioned relative to another object so we have to take care of the ourselves. Most of the time the default implementation of the positioning algorithm should suit your needs but in some cases you might have to override it and position the popup yourself.
+
+You do that in the `onScroll` event which gets called whenever the set `scrollTarget` is scrolled. The default scrollTarget to listen for scroll elements is the browser window `$(window)` but you could also set it to your content area in the options like this:
+
+{% highlight html %}
+<select id="my-select" name="character"></select>
+
+<script type="text/javascript">
+$(function() {
+    
+    $('#my-select').searchableOptionList({
+        scrollTarget: $('#my-content-area'),    // change the scrollTarget if neccessary
+        events: {
+           
+            // override the default onScroll positioning event if neccessary
+            onScroll: function () {
+                // gets called when the contents of the
+                // my-content-area container are scrolled
+                
+                // now you need to position sol popup
+                // below is the default implementation to
+                // give you a hint how to position the popup
+                // adapt it to your needs
+                // 
+                // you have access to all internal SOL attributes via "this."
+                
+                var posY = this.$input.offset().top - this.config.scrollTarget.scrollTop() + this.$input.outerHeight(),
+                    selectionContainerWidth = this.$innerContainer.outerWidth(false) - parseInt(this.$selectionContainer.css('border-left-width'), 10) - parseInt(this.$selectionContainer.css('border-right-width'), 10);
+
+                if (this.$innerContainer.css('display') !== 'block') {
+                    // container has a certain width
+                    // make selection container a bit wider
+                    selectionContainerWidth = Math.ceil(selectionContainerWidth * 1.2);
+                } else {
+                    // no border radius on top
+                    this.$selectionContainer
+                        .css('border-top-right-radius', 'initial');
+
+                    if (this.$actionButtons) {
+                        this.$actionButtons
+                            .css('border-top-right-radius', 'initial');
+                    }
+                }
+
+                this.$selectionContainer
+                    .css('top', Math.floor(posY))
+                    .css('left', Math.floor(this.$container.offset().left))
+                    .css('width', selectionContainerWidth);
+            }
+        }
+    });
+    
+});    
+</script>
+{% endhighlight %}
+
+<style type="text/css">    
+    #positionshowcase {
+        border: 1px solid red;
+        padding: 5px;
+        height: 140px;
+        overflow: auto;
+    }
+    
+    #positionshowcase .sol-container {
+        display: inline-block;    
+    }
+    
+    #positionshowcase .sol-container:nth-of-type(1) .sol-selection-container {
+        position: absolute;
+        top: 30px;
+        width: 280px;
+    }
+</style>
 
 <script type="text/javascript">
     $(function() {
@@ -517,6 +692,31 @@ YADDA
         
         $('#my-verylong-select').searchableOptionList({ maxHeight: '250px' });
         $('#my-multiselect-all').searchableOptionList({ showSelectAll: true });
-        $('#null-allowed-select').searchableOptionList({ allowNullSelection: true });
+        $('#null-allowed-select').searchableOptionList({ allowNullSelection: true });        
+        $('#default-texts').searchableOptionList({ showSelectAll: true });
+        $('#custom-texts').searchableOptionList({            
+            showSelectAll: true,
+            texts: {
+                noItemsAvailable: 'Go on, nothing to see here',
+                selectAll: 'Get em all',
+                selectNone: 'Nah',
+                quickDelete: 'Kick',
+                searchplaceholder: 'Giggity giggity...'
+            }
+        });
+        
+        $('#positionshowcase select:first').searchableOptionList({
+            texts: {
+                searchplaceholder: 'Not fixed'
+            },
+            events: {
+                onScroll: function () {}
+            }
+        });
+        $('#positionshowcase select:not(:first)').searchableOptionList({
+            texts: {
+                searchplaceholder: 'Fixed'
+            }
+        });
     });
 </script>
