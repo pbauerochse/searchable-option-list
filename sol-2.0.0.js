@@ -481,6 +481,7 @@
                 value:    $option.val(),
                 selected: $option.prop('selected'),
                 disabled: $option.prop('disabled'),
+                cssClass: $element.attr('class'),
                 label:    $option.html(),
                 tooltip:  $option.attr('title'),
                 element:  $option
@@ -575,7 +576,7 @@
             var self = this,
                 $actualTargetContainer = $optionalTargetContainer || this.$selection,
                 $inputElement,
-                $labelText = $('<div class="sol-label-text"/>').html(solOption.label.trim().length === 0 ? '&nbsp;' : solOption.label),
+                $labelText = $('<div class="sol-label-text"/>').html(solOption.label.trim().length === 0 ? '&nbsp;' : solOption.label).addClass(solOption.cssClass),
                 $label,
                 $displayElement,
                 inputName = this._getNameAttribute();
