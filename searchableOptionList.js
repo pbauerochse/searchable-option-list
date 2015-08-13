@@ -499,6 +499,7 @@
                 value: $element.attr('value'),
                 selected: $element.prop('selected'),
                 disabled: $element.prop('disabled'),
+                cssClass: $element.attr('class'),
                 label: $element.html(),
                 tooltip: $element.attr('title'),
                 element: $element
@@ -567,6 +568,7 @@
                 .prop('checked', item.selected)
                 .prop('disabled', item.disabled)
                 .attr('name', inputName)
+                .addClass(item.cssClass)
                 .data('sol-item', item)
                 .val(item.value);
 
