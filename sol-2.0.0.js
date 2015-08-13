@@ -481,7 +481,7 @@
                 value:    $option.val(),
                 selected: $option.prop('selected'),
                 disabled: $option.prop('disabled'),
-                cssClass: $element.attr('class'),
+                cssClass: $option.attr('class'),
                 label:    $option.html(),
                 tooltip:  $option.attr('title'),
                 element:  $option
