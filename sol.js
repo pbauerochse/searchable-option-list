@@ -1,6 +1,6 @@
 /*
  * SOL - Searchable Option List jQuery plugin
- * Version 2.0.0
+ * Version 2.0.1
  * https://pbauerochse.github.io/searchable-option-list/
  *
  * Copyright 2015, Patrick Bauerochse
@@ -67,28 +67,49 @@
                 onChange: undefined,
                 onScroll: function () {
 
-                    var posY = Math.floor(this.$input.offset().top) - Math.floor(this.config.scrollTarget.scrollTop()) + Math.floor(this.$input.outerHeight()),
+                    var selectionContainerYPos = this.$input.offset().top - this.config.scrollTarget.scrollTop() + this.$input.outerHeight(false),
+                        selectionContainerHeight = this.$selectionContainer.outerHeight(false),
+                        selectionContainerBottom = selectionContainerYPos + selectionContainerHeight,
+                        displayContainerAboveInput = this.config.displayContainerAboveInput || document.documentElement.clientHeight - this.config.scrollTarget.scrollTop() < selectionContainerBottom,
                         selectionContainerWidth = this.$innerContainer.outerWidth(false) - parseInt(this.$selectionContainer.css('border-left-width'), 10) - parseInt(this.$selectionContainer.css('border-right-width'), 10);
+
+                    if (displayContainerAboveInput) {
+                        // position the popup above the input
+                        selectionContainerYPos = this.$input.offset().top - selectionContainerHeight - this.config.scrollTarget.scrollTop() + parseInt(this.$selectionContainer.css('border-bottom-width'), 10);
+                        this.$container
+                            .removeClass('sol-selection-bottom')
+                            .addClass('sol-selection-top');
+                    } else {
+                        this.$container
+                            .removeClass('sol-selection-top')
+                            .addClass('sol-selection-bottom');
+                    }
 
                     if (this.$innerContainer.css('display') !== 'block') {
                         // container has a certain width
                         // make selection container a bit wider
-                        selectionContainerWidth = Math.ceil(selectionContainerWidth * 1.2);
+                        selectionContainerWidth = selectionContainerWidth * 1.2;
                     } else {
+
+                        var borderRadiusSelector = displayContainerAboveInput ? 'border-bottom-right-radius' : 'border-top-right-radius';
+
                         // no border radius on top
                         this.$selectionContainer
-                            .css('border-top-right-radius', 'initial');
+                            .css(borderRadiusSelector, 'initial');
 
                         if (this.$actionButtons) {
                             this.$actionButtons
-                                .css('border-top-right-radius', 'initial');
+                                .css(borderRadiusSelector, 'initial');
                         }
                     }
 
                     this.$selectionContainer
-                        .css('top', Math.floor(posY))
+                        .css('top', Math.floor(selectionContainerYPos))
                         .css('left', Math.floor(this.$container.offset().left))
                         .css('width', selectionContainerWidth);
+
+                    // remember the position
+                    this.config.displayContainerAboveInput = displayContainerAboveInput;
                 }
             },
 
@@ -207,8 +228,8 @@
 
                 // buttons for (de-)select all
                 if (this.config.showSelectAll) {
-                    var $deselectAllButton = $('<a href="#" class="sol-deselect-all"/>').html(this.config.texts.selectNone).click(function () { self.deselectAll(); }),
-                        $selectAllButton = $('<a href="#" class="sol-select-all"/>').html(this.config.texts.selectAll).click(function () { self.selectAll(); });
+                    var $deselectAllButton = $('<a href="#" class="sol-deselect-all"/>').html(this.config.texts.selectNone).click(function (e) { self.deselectAll(); e.preventDefault(); return false; }),
+                        $selectAllButton = $('<a href="#" class="sol-select-all"/>').html(this.config.texts.selectAll).click(function (e) { self.selectAll(); e.preventDefault(); return false; });
 
                     this.$actionButtons = $('<div class="sol-action-buttons"/>').append($selectAllButton).append($deselectAllButton).append('<div class="sol-clearfix"/>');
                     this.$selectionContainer.prepend(this.$actionButtons);
@@ -358,9 +379,9 @@
                     }
                 });
         },
-        
+
         _setKeyBoardNavigationMode: function (keyboardNavigationOn) {
-            
+
             if (keyboardNavigationOn) {
                 // on
                 this.keyboardNavigationMode = true;
@@ -389,6 +410,12 @@
 
             if (lowerCased.trim().length > 0) {
                 this._findTerms(this.items, lowerCased);
+            }
+
+            // call onScroll to position the popup again
+            // important if showing popup above list
+            if ($.isFunction(this.config.events.onScroll)) {
+                this.config.events.onScroll.call(this);
             }
         },
 
@@ -566,7 +593,7 @@
                     return;
                 }
             });
-            
+
             if ($.isFunction(this.config.events.onInitialized)) {
                 this.config.events.onInitialized.call(this, this, solItems);
             }
@@ -652,6 +679,23 @@
         },
 
         _selectionChange: function ($changeItem, skipCallback) {
+
+            // apply state to original select if neccessary
+            // helps to keep old legacy code running which depends
+            // on retrieving the value via jQuery option selectors
+            // e.g. $('#myPreviousSelectWhichNowIsSol').val()
+            if (this.$originalElement && this.$originalElement.prop('tagName').toLowerCase() === 'select') {
+                var self = this;
+                this.$originalElement.find('option').each(function (index, item) {
+                    var $currentOriginalOption = $(item);
+                    if ($currentOriginalOption.val() === $changeItem.val()) {
+                        $currentOriginalOption.prop('selected', $changeItem.prop('checked'));
+                        self.$originalElement.trigger('change');
+                        return;
+                    }
+                });
+            }
+
             if ($changeItem.prop('checked')) {
                 this._addSelectionDisplayItem($changeItem);
             } else {
@@ -759,7 +803,7 @@
             if (this.isOpen()) {
                 this._setKeyBoardNavigationMode(false);
 
-                
+
                 this.$container.removeClass('sol-active');
                 this.config.scrollTarget.unbind('scroll', this.internalScrollWrapper);
                 $(window).off('resize');
@@ -782,7 +826,7 @@
                     .trigger('change', true);
 
                 this.close();
-                
+
                 if ($.isFunction(this.config.events.onChange)) {
                     this.config.events.onChange.call(this, this, $changedInputs);
                 }
@@ -797,7 +841,7 @@
                     .trigger('change', true);
 
                 this.close();
-                
+
                 if ($.isFunction(this.config.events.onChange)) {
                     this.config.events.onChange.call(this, this, $changedInputs);
                 }
@@ -812,7 +856,7 @@
     // jquery plugin boiler plate code
     SearchableOptionList.defaults = SearchableOptionList.prototype.defaults;
     window.SearchableOptionList = SearchableOptionList;
-    
+
     $.fn.searchableOptionList = function (options) {
         var result = [];
         this.each(function () {
