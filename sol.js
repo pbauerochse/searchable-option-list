@@ -33,7 +33,8 @@
             selected : false,           // boolean selected state
             disabled : false,           // boolean disabled state
             label :    undefined,       // label string
-            tooltip:   undefined        // tooltip string
+            tooltip:   undefined,       // tooltip string
+            cssClass:  ''               // custom css class for container
         },
         SOL_OPTIONGROUP_FORMAT : {
             type:     'optiongroup',    // fixed
@@ -505,6 +506,7 @@
                 value:    $option.val(),
                 selected: $option.prop('selected'),
                 disabled: $option.prop('disabled'),
+                cssClass: $option.attr('class'),
                 label:    $option.html(),
                 tooltip:  $option.attr('title'),
                 element:  $option
@@ -599,7 +601,9 @@
             var self = this,
                 $actualTargetContainer = $optionalTargetContainer || this.$selection,
                 $inputElement,
-                $labelText = $('<div class="sol-label-text"/>').html(solOption.label.trim().length === 0 ? '&nbsp;' : solOption.label),
+                $labelText = $('<div class="sol-label-text"/>')
+                                .html(solOption.label.trim().length === 0 ? '&nbsp;' : solOption.label)
+                                .addClass(solOption.cssClass),
                 $label,
                 $displayElement,
                 inputName = this._getNameAttribute();
