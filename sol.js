@@ -57,7 +57,8 @@
                 selectAll: 'Select all',
                 selectNone: 'Select none',
                 quickDelete: '&times;',
-                searchplaceholder: 'Click here to search'
+                searchplaceholder: 'Click here to search',
+                loadingData: 'Still loading data...'
             },
 
             events: {
@@ -125,7 +126,8 @@
             allowNullSelection: false,
             scrollTarget: undefined,
             maxHeight: undefined,
-            converter: undefined
+            converter: undefined,
+            asyncBatchSize: 300
         },
 
         // initialize the plugin
@@ -146,22 +148,20 @@
                 this.config.scrollTarget = $(window);
             }
 
-            // init event async
-            setTimeout(function () {
-                sol._registerWindowEventsIfNeccessary.call(sol);
-                sol._initializeUiElements.call(sol);
-                sol._initializeInputEvents.call(sol);
-                sol._initializeData.call(sol);
-                sol._initializeSelectAll.call(sol);
+            this._registerWindowEventsIfNeccessary();
+            this._initializeUiElements();
+            this._initializeInputEvents();
+            this._initializeData();
+            this._initializeSelectAll();
 
-                // take original form element out of form submission
-                // by removing the name attribute
-                sol.$originalElement
-                    .data(sol.DATA_KEY, sol)
-                    .removeAttr('name')
-                    .data('sol-name', originalName)
-                    .hide();
-            }, 5);
+            // take original form element out of form submission
+            // by removing the name attribute
+            this.$originalElement
+                .data(this.DATA_KEY, this)
+                .removeAttr('name')
+                .data('sol-name', originalName);
+
+            this.$originalElement.hide();
 
             return this;
         },
@@ -217,13 +217,19 @@
                 .attr('placeholder', this.config.texts.searchplaceholder);
 
             this.$noResultsItem = $('<div class="sol-no-results"/>').html(this.config.texts.noItemsAvailable).hide();
+            this.$loadingData = $('<div class="sol-loading-data">').html(this.config.texts.loadingData);
 
             this.$caret = $('<div class="sol-caret-container"><b class="caret"/></div>').click(function () { self.toggle(); });
-            var $inputContainer = $('<div class="sol-input-container"/>').append(this.$input);
 
+            var $inputContainer = $('<div class="sol-input-container"/>').append(this.$input);
             this.$innerContainer = $('<div class="sol-inner-container"/>').append($inputContainer).append(this.$caret);
             this.$selection = $('<div class="sol-selection"/>');
-            this.$selectionContainer = $('<div class="sol-selection-container"/>').append(this.$noResultsItem).append(this.$selection).appendTo(this.$innerContainer);
+            this.$selectionContainer = $('<div class="sol-selection-container"/>')
+                .append(this.$noResultsItem)
+                .append(this.$loadingData)
+                .append(this.$selection)
+                .appendTo(this.$innerContainer);
+
             this.$container = $('<div class="sol-container"/>').data(this.DATA_KEY, this).append(this.$innerContainer).insertBefore(this.$originalElement);
 
             // add selected items display container
@@ -449,6 +455,7 @@
         },
 
         _initializeData: function () {
+
             if (!this.config.data) {
                 this.items = this._detectDataFromOriginalElement();
             } else if ($.isFunction(this.config.data)) {
@@ -491,7 +498,6 @@
                         self._showErrorLabel('Invalid element found in select: ' + itemTagName + '. Only option and optgroup are allowed');
                     }
                 });
-
                 return this._invokeConverterIfNeccessary(solData);
             } else if (this.$originalElement.data('sol-data')) {
                 var solDataAttributeValue = this.$originalElement.data('sol-data');
@@ -579,22 +585,42 @@
                 return;
             }
 
-            var self = this;
+            var self = this,
+                nextIndex = 0,
+                dataProcessedFunction = function () {
+                    // hide "loading data"
+                    this.$loadingData.remove();
 
-            $.each(solItems, function (index, item) {
-                if (item.type === SearchableOptionList.prototype.SOL_OPTION_FORMAT.type) {
-                    self._renderOption(item);
-                } else if (item.type === SearchableOptionList.prototype.SOL_OPTIONGROUP_FORMAT.type) {
-                    self._renderOptiongroup(item);
-                } else {
-                    self._showErrorLabel('Invalid item type found ' + item.type);
-                    return;
-                }
-            });
+                    if ($.isFunction(this.config.events.onInitialized)) {
+                        this.config.events.onInitialized.call(this, this, solItems);
+                    }
+                },
+                loopFunction = function () {
 
-            if ($.isFunction(this.config.events.onInitialized)) {
-                this.config.events.onInitialized.call(this, this, solItems);
-            }
+                    var currentBatch = 0,
+                        item;
+
+                    while (currentBatch++ < self.config.asyncBatchSize && nextIndex < solItems.length) {
+                        item = solItems[nextIndex++];
+                        if (item.type === self.SOL_OPTION_FORMAT.type) {
+                            self._renderOption(item);
+                        } else if (item.type === self.SOL_OPTIONGROUP_FORMAT.type) {
+                            self._renderOptiongroup(item);
+                        } else {
+                            self._showErrorLabel('Invalid item type found ' + item.type);
+                            return;
+                        }
+                    }
+
+                    if (nextIndex >= solItems.length) {
+                        dataProcessedFunction.call(self);
+                    } else {
+                        setTimeout(loopFunction, 0);
+                    }
+                };
+
+            // start async rendering of html elements
+            loopFunction.call(this);
         },
 
         _renderOption: function (solOption, $optionalTargetContainer) {
