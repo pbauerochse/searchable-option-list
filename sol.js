@@ -11,7 +11,8 @@
  */
 
 /*jslint nomen: true */
-;(function ($, window, document) {
+;
+(function ($, window, document) {
     'use strict';
 
     // constructor
@@ -27,16 +28,16 @@
     // plugin prototype
     SearchableOptionList.prototype = {
 
-        SOL_OPTION_FORMAT : {
-            type :     'option',        // fixed
-            value :    undefined,       // value that will be submitted
-            selected : false,           // boolean selected state
-            disabled : false,           // boolean disabled state
-            label :    undefined,       // label string
-            tooltip:   undefined,       // tooltip string
-            cssClass:  ''               // custom css class for container
+        SOL_OPTION_FORMAT: {
+            type:     'option',        // fixed
+            value:    undefined,       // value that will be submitted
+            selected: false,           // boolean selected state
+            disabled: false,           // boolean disabled state
+            label:    undefined,       // label string
+            tooltip:  undefined,       // tooltip string
+            cssClass: ''               // custom css class for container
         },
-        SOL_OPTIONGROUP_FORMAT : {
+        SOL_OPTIONGROUP_FORMAT: {
             type:     'optiongroup',    // fixed
             label:    undefined,        // label string
             tooltip:  undefined,        // tooltip string
@@ -44,15 +45,15 @@
             children: undefined         // array of SOL_OPTION_FORMAT objects
         },
 
-        DATA_KEY : 'sol-element',
-        WINDOW_EVENTS_KEY : 'sol-window-events',
+        DATA_KEY: 'sol-element',
+        WINDOW_EVENTS_KEY: 'sol-window-events',
 
         // default option values
-        defaults : {
-            data : undefined,
-            name : undefined,           // name attribute, can also be set as name="" attribute on original element or data-sol-name=""
+        defaults: {
+            data: undefined,
+            name: undefined,           // name attribute, can also be set as name="" attribute on original element or data-sol-name=""
 
-            texts : {
+            texts: {
                 noItemsAvailable: 'No entries found',
                 selectAll: 'Select all',
                 selectNone: 'Select none',
@@ -117,7 +118,7 @@
 
             selectAllMaxItemsThreshold: 30,
             showSelectAll: function () {
-                this.config.multiple && this.config.selectAllItemsThreshold && this.items && this.items.length <= this.config.selectAllMaxItemsThreshold;
+                return this.config.multiple && this.config.selectAllMaxItemsThreshold && this.items && this.items.length <= this.config.selectAllMaxItemsThreshold;
             },
 
             useBracketParameters: false,
@@ -151,15 +152,17 @@
             this._registerWindowEventsIfNeccessary();
             this._initializeUiElements();
             this._initializeInputEvents();
-            this._initializeData();
-            this._initializeSelectAll();
 
-            // take original form element out of form submission
-            // by removing the name attribute
-            this.$originalElement
-                .data(this.DATA_KEY, this)
-                .removeAttr('name')
-                .data('sol-name', originalName);
+            setTimeout(function () {
+                sol._initializeData();
+
+                // take original form element out of form submission
+                // by removing the name attribute
+                sol.$originalElement
+                    .data(sol.DATA_KEY, sol)
+                    .removeAttr('name')
+                    .data('sol-name', originalName);
+            }, 0);
 
             this.$originalElement.hide();
 
@@ -219,7 +222,9 @@
             this.$noResultsItem = $('<div class="sol-no-results"/>').html(this.config.texts.noItemsAvailable).hide();
             this.$loadingData = $('<div class="sol-loading-data">').html(this.config.texts.loadingData);
 
-            this.$caret = $('<div class="sol-caret-container"><b class="caret"/></div>').click(function () { self.toggle(); });
+            this.$caret = $('<div class="sol-caret-container"><b class="caret"/></div>').click(function () {
+                self.toggle();
+            });
 
             var $inputContainer = $('<div class="sol-input-container"/>').append(this.$input);
             this.$innerContainer = $('<div class="sol-inner-container"/>').append($inputContainer).append(this.$caret);
@@ -248,7 +253,7 @@
             if (this.$originalElement.css('display') !== 'block') {
                 this.$innerContainer
                     .css('display', this.$originalElement.css('display'))
-                    .css('width',   this.$originalElement.outerWidth(false));
+                    .css('width', this.$originalElement.outerWidth(false));
             }
 
             if ($.isFunction(this.config.events.onRendered)) {
@@ -304,7 +309,9 @@
 
             // text input events
             this.$input
-                .focus(function () { self.open(); })
+                .focus(function () {
+                    self.open();
+                })
                 .on('input', function () {
                     self._applySearchTermFilter();
                 });
@@ -455,7 +462,6 @@
         },
 
         _initializeData: function () {
-
             if (!this.config.data) {
                 this.items = this._detectDataFromOriginalElement();
             } else if ($.isFunction(this.config.data)) {
@@ -509,21 +515,21 @@
 
         _processSelectOption: function ($option) {
             return $.extend({}, this.SOL_OPTION_FORMAT, {
-                value:    $option.val(),
+                value: $option.val(),
                 selected: $option.prop('selected'),
                 disabled: $option.prop('disabled'),
                 cssClass: $option.attr('class'),
-                label:    $option.html(),
-                tooltip:  $option.attr('title'),
-                element:  $option
+                label: $option.html(),
+                tooltip: $option.attr('title'),
+                element: $option
             });
         },
 
         _processSelectOptgroup: function ($optgroup) {
             var self = this,
                 solOptiongroup = $.extend({}, this.SOL_OPTIONGROUP_FORMAT, {
-                    label:    $optgroup.attr('label'),
-                    tooltip:  $optgroup.attr('title'),
+                    label: $optgroup.attr('label'),
+                    tooltip: $optgroup.attr('title'),
                     disabled: $optgroup.prop('disabled'),
                     children: []
                 }),
@@ -590,6 +596,7 @@
                 dataProcessedFunction = function () {
                     // hide "loading data"
                     this.$loadingData.remove();
+                    this._initializeSelectAll();
 
                     if ($.isFunction(this.config.events.onInitialized)) {
                         this.config.events.onInitialized.call(this, this, solItems);
@@ -628,8 +635,8 @@
                 $actualTargetContainer = $optionalTargetContainer || this.$selection,
                 $inputElement,
                 $labelText = $('<div class="sol-label-text"/>')
-                                .html(solOption.label.trim().length === 0 ? '&nbsp;' : solOption.label)
-                                .addClass(solOption.cssClass),
+                    .html(solOption.label.trim().length === 0 ? '&nbsp;' : solOption.label)
+                    .addClass(solOption.cssClass),
                 $label,
                 $displayElement,
                 inputName = this._getNameAttribute();
@@ -669,9 +676,9 @@
                 .val(solOption.value);
 
             $label = $('<label class="sol-label"/>')
-                        .attr('title', solOption.tooltip)
-                        .append($inputElement)
-                        .append($labelText);
+                .attr('title', solOption.tooltip)
+                .append($inputElement)
+                .append($labelText);
 
             $displayElement = $('<div class="sol-option"/>').append($label);
             solOption.displayElement = $displayElement;
@@ -686,8 +693,8 @@
         _renderOptiongroup: function (solOptiongroup) {
             var self = this,
                 $groupCaption = $('<div class="sol-optiongroup-label"/>')
-                                    .attr('title', solOptiongroup.tooltip)
-                                    .html(solOptiongroup.label),
+                    .attr('title', solOptiongroup.tooltip)
+                    .html(solOptiongroup.label),
                 $groupItem = $('<div class="sol-optiongroup"/>').append($groupCaption);
 
             if (solOptiongroup.disabled) {
@@ -709,8 +716,16 @@
             if (this.config.showSelectAll === true || ($.isFunction(this.config.showSelectAll) && this.config.showSelectAll.call(this))) {
                 // buttons for (de-)select all
                 var self = this,
-                    $deselectAllButton = $('<a href="#" class="sol-deselect-all"/>').html(this.config.texts.selectNone).click(function (e) { self.deselectAll(); e.preventDefault(); return false; }),
-                    $selectAllButton = $('<a href="#" class="sol-select-all"/>').html(this.config.texts.selectAll).click(function (e) { self.selectAll(); e.preventDefault(); return false; });
+                    $deselectAllButton = $('<a href="#" class="sol-deselect-all"/>').html(this.config.texts.selectNone).click(function (e) {
+                        self.deselectAll();
+                        e.preventDefault();
+                        return false;
+                    }),
+                    $selectAllButton = $('<a href="#" class="sol-select-all"/>').html(this.config.texts.selectAll).click(function (e) {
+                        self.selectAll();
+                        e.preventDefault();
+                        return false;
+                    });
 
                 this.$actionButtons = $('<div class="sol-action-buttons"/>').append($selectAllButton).append($deselectAllButton).append('<div class="sol-clearfix"/>');
                 this.$selectionContainer.prepend(this.$actionButtons);
@@ -905,7 +920,12 @@
             if ($alreadyInitializedSol) {
                 result.push($alreadyInitializedSol);
             } else {
-                result.push(new SearchableOptionList($this, options).init());
+                var newSol = new SearchableOptionList($this, options);
+                result.push(newSol);
+
+                setTimeout(function() {
+                    newSol.init();
+                }, 0);
             }
         });
 
