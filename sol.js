@@ -189,10 +189,19 @@
                 $(document).click(function (event) {
                     // if clicked inside a sol element close all others
                     // else close all sol containers
-                    var $closestSolContainer = $(event.target).closest('.sol-inner-container'),
-                        $clickedWithinThisSolContainer = $closestSolContainer.first().parent('.sol-container');
 
-                    $('.sol-container')
+                    var $clickedElement = $(event.target),
+                        $closestSelectionContainer = $clickedElement.closest('.sol-selection-container'),
+                        $closestInnerContainer = $clickedElement.closest('.sol-inner-container'),
+                        $clickedWithinThisSolContainer;
+
+                    if ($closestInnerContainer.length) {
+                        $clickedWithinThisSolContainer = $closestInnerContainer.first().parent('.sol-container');
+                    } else if ($closestSelectionContainer.length) {
+                        $clickedWithinThisSolContainer = $closestSelectionContainer.first().parent('.sol-container');
+                    }
+
+                    $('.sol-active')
                         .not($clickedWithinThisSolContainer)
                         .each(function (index, item) {
                             $(item)
@@ -222,8 +231,10 @@
             this.$noResultsItem = $('<div class="sol-no-results"/>').html(this.config.texts.noItemsAvailable).hide();
             this.$loadingData = $('<div class="sol-loading-data">').html(this.config.texts.loadingData);
 
-            this.$caret = $('<div class="sol-caret-container"><b class="caret"/></div>').click(function () {
+            this.$caret = $('<div class="sol-caret-container"><b class="sol-caret"/></div>').click(function (e) {
                 self.toggle();
+                e.preventDefault();
+                return false;
             });
 
             var $inputContainer = $('<div class="sol-input-container"/>').append(this.$input);
@@ -232,10 +243,9 @@
             this.$selectionContainer = $('<div class="sol-selection-container"/>')
                 .append(this.$noResultsItem)
                 .append(this.$loadingData)
-                .append(this.$selection)
-                .appendTo(this.$innerContainer);
+                .append(this.$selection);
 
-            this.$container = $('<div class="sol-container"/>').data(this.DATA_KEY, this).append(this.$innerContainer).insertBefore(this.$originalElement);
+            this.$container = $('<div class="sol-container"/>').data(this.DATA_KEY, this).append(this.$selectionContainer).append(this.$innerContainer).insertBefore(this.$originalElement);
 
             // add selected items display container
             this.$showSelectionContainer = $('<div class="sol-current-selection"/>');
@@ -812,12 +822,14 @@
         _setNoResultsItemVisible: function (visible) {
             if (visible) {
                 this.$noResultsItem.show();
+                this.$selection.hide();
 
                 if (this.$actionButtons) {
                     this.$actionButtons.hide();
                 }
             } else {
                 this.$noResultsItem.hide();
+                this.$selection.show();
 
                 if (this.$actionButtons) {
                     this.$actionButtons.show();
