@@ -598,6 +598,7 @@
 
             if (solItems.length === 0) {
                 this._setNoResultsItemVisible(true);
+                this.$loadingData.remove();
                 return;
             }
 
@@ -877,6 +878,9 @@
                 // reset search on close
                 this.$input.val('');
                 this._applySearchTermFilter();
+
+                // clear to recalculate position again the next time sol is opened
+                this.config.displayContainerAboveInput = undefined;
 
                 if ($.isFunction(this.config.events.onClose)) {
                     this.config.events.onClose.call(this, this);
