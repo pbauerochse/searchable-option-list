@@ -143,6 +143,13 @@
                 return;
             }
 
+            // old IE does not support trim
+            if (typeof String.prototype.trim !== 'function') {
+                String.prototype.trim = function () {
+                    return this.replace(/^\s+|\s+$/g, '');
+                }
+            }
+
             this.config.multiple = this.config.multiple || this.$originalElement.attr('multiple');
 
             if (!this.config.scrollTarget) {
@@ -165,6 +172,9 @@
             }, 0);
 
             this.$originalElement.hide();
+            this.$container
+                .css('visibility', 'initial')
+                .show();
 
             return this;
         },
@@ -245,7 +255,12 @@
                 .append(this.$loadingData)
                 .append(this.$selection);
 
-            this.$container = $('<div class="sol-container"/>').data(this.DATA_KEY, this).append(this.$selectionContainer).append(this.$innerContainer).insertBefore(this.$originalElement);
+            this.$container = $('<div class="sol-container"/>')
+                .hide()
+                .data(this.DATA_KEY, this)
+                .append(this.$selectionContainer)
+                .append(this.$innerContainer)
+                .insertBefore(this.$originalElement);
 
             // add selected items display container
             this.$showSelectionContainer = $('<div class="sol-current-selection"/>');
@@ -272,9 +287,10 @@
 
             // apply css inline styles to $container
             for (var i = 0; i < stylesList.length; i++) {
-                var splitted = stylesList[i].split(':');
+                var splitted = stylesList[i].split(/\s*\:\s*/g);
+
                 if (splitted.length === 2) {
-                    this.$container.css(splitted[0], splitted[1]);
+                    this.$container.css(splitted[0].trim(), splitted[1].trim());
                 }
             }
 
