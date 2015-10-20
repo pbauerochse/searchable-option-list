@@ -310,7 +310,7 @@
                 }
             }
 
-            if (this.$originalElement.css('display') !== 'block' && ) {
+            if (this.$originalElement.css('display') !== 'block') {
                 this.$container.css('width', this._getActualCssPropertyValue(this.$originalElement, 'width'));
             }
 
