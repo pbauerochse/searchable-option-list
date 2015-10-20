@@ -128,8 +128,7 @@
             scrollTarget: undefined,
             maxHeight: undefined,
             converter: undefined,
-            asyncBatchSize: 300,
-            minimumInputWidthInPixel: 200
+            asyncBatchSize: 300
         },
 
         // initialize the plugin
