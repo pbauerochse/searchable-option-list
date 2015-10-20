@@ -128,7 +128,8 @@
             scrollTarget: undefined,
             maxHeight: undefined,
             converter: undefined,
-            asyncBatchSize: 300
+            asyncBatchSize: 300,
+            minimumInputWidthInPixel: 200
         },
 
         // initialize the plugin
@@ -275,34 +276,67 @@
                 this.$selection.css('max-height', this.config.maxHeight);
             }
 
-
             // detect inline css classes and styles
-            var cssClassList = this.$originalElement.attr('class').split(/\s+/),
-                stylesList = this.$originalElement.attr('style').split(/\;/);
+            var cssClassesAsString = this.$originalElement.attr('class'),
+                cssStylesAsString = this.$originalElement.attr('style'),
+                cssClassList = [],
+                stylesList = [];
 
-            // apply css classes to $container
-            for (var i = 0; i < cssClassList.length; i++) {
-                this.$container.addClass(cssClassList[i]);
+            if (cssClassesAsString && cssClassesAsString.length > 0) {
+                cssClassList = cssClassesAsString.split(/\s+/);
+
+                // apply css classes to $container
+                for (var i = 0; i < cssClassList.length; i++) {
+                    this.$container.addClass(cssClassList[i]);
+                }
             }
 
-            // apply css inline styles to $container
-            for (var i = 0; i < stylesList.length; i++) {
-                var splitted = stylesList[i].split(/\s*\:\s*/g);
+            if (cssStylesAsString && cssStylesAsString.length > 0) {
+                stylesList = cssStylesAsString.split(/\;/);
 
-                if (splitted.length === 2) {
+                // apply css inline styles to $container
+                for (var i = 0; i < stylesList.length; i++) {
+                    var splitted = stylesList[i].split(/\s*\:\s*/g);
 
-                    if (splitted[0].toLowerCase().indexOf('height') >= 0) {
-                        // height property, apply to innerContainer instead of outer
-                        this.$innerContainer.css(splitted[0].trim(), splitted[1].trim());
-                    } else {
-                        this.$container.css(splitted[0].trim(), splitted[1].trim());
+                    if (splitted.length === 2) {
+
+                        if (splitted[0].toLowerCase().indexOf('height') >= 0) {
+                            // height property, apply to innerContainer instead of outer
+                            this.$innerContainer.css(splitted[0].trim(), splitted[1].trim());
+                        } else {
+                            this.$container.css(splitted[0].trim(), splitted[1].trim());
+                        }
                     }
                 }
+            }
+
+            if (this.$originalElement.css('display') !== 'block' && ) {
+                this.$container.css('width', this._getActualCssPropertyValue(this.$originalElement, 'width'));
             }
 
             if ($.isFunction(this.config.events.onRendered)) {
                 this.config.events.onRendered.call(this, this);
             }
+        },
+
+        _getActualCssPropertyValue: function ($element, property) {
+
+            var domElement = $element.get(0),
+                originalDisplayProperty = $element.css('display');
+
+            // set invisible to get original width setting instead of translated to px
+            // see https://bugzilla.mozilla.org/show_bug.cgi?id=707691#c7
+            $element.css('display', 'none');
+
+            if (domElement.currentStyle) {
+                return domElement.currentStyle(property);
+            } else if (window.getComputedStyle) {
+                return document.defaultView.getComputedStyle(domElement, null).getPropertyValue(property);
+            }
+
+            $element.css('display', originalDisplayProperty);
+
+            return $element.css(property);
         },
 
         _initializeInputEvents: function () {
