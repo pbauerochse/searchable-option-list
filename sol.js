@@ -1,6 +1,6 @@
 /*
  * SOL - Searchable Option List jQuery plugin
- * Version 2.0.1
+ * Version 2.0.2
  * https://pbauerochse.github.io/searchable-option-list/
  *
  * Copyright 2015, Patrick Bauerochse
@@ -260,10 +260,22 @@
                 this.$selection.css('max-height', this.config.maxHeight);
             }
 
-            if (this.$originalElement.css('display') !== 'block') {
-                this.$innerContainer
-                    .css('display', this.$originalElement.css('display'))
-                    .css('width', this.$originalElement.outerWidth(false));
+
+            // detect inline css classes and styles
+            var cssClassList = this.$originalElement.attr('class').split(/\s+/),
+                stylesList = this.$originalElement.attr('style').split(/\;/);
+
+            // apply css classes to $container
+            for (var i = 0; i < cssClassList.length; i++) {
+                this.$container.addClass(cssClassList[i]);
+            }
+
+            // apply css inline styles to $container
+            for (var i = 0; i < stylesList.length; i++) {
+                var splitted = stylesList[i].split(':');
+                if (splitted.length === 2) {
+                    this.$container.css(splitted[0], splitted[1]);
+                }
             }
 
             if ($.isFunction(this.config.events.onRendered)) {
