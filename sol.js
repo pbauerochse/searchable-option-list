@@ -290,7 +290,13 @@
                 var splitted = stylesList[i].split(/\s*\:\s*/g);
 
                 if (splitted.length === 2) {
-                    this.$container.css(splitted[0].trim(), splitted[1].trim());
+
+                    if (splitted[0].toLowerCase().indexOf('height') >= 0) {
+                        // height property, apply to innerContainer instead of outer
+                        this.$innerContainer.css(splitted[0].trim(), splitted[1].trim());
+                    } else {
+                        this.$container.css(splitted[0].trim(), splitted[1].trim());
+                    }
                 }
             }
 

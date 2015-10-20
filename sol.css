@@ -104,10 +104,10 @@
     background: transparent;
     box-shadow: none;
     color: #555;
-    height: 30px;
     padding: 0 7px;
     outline: none;
     width: 100%;
+    height: 100%;
 }
 
 .sol-input-container input[type="text"]:-ms-input-placeholder {
