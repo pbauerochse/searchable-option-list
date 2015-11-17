@@ -389,8 +389,14 @@
                 .focus(function () {
                     self.open();
                 })
-                .on('input', function () {
-                    self._applySearchTermFilter();
+                .on('propertychange input', function (e) {
+                    var valueChanged = true;
+                    if (e.type=='propertychange') {
+                        valueChanged = e.originalEvent.propertyName.toLowerCase()=='value';
+                    }
+                    if (valueChanged) {
+                        self._applySearchTermFilter();
+                    }
                 });
 
             // keyboard navigation
