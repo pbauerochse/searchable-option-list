@@ -328,7 +328,7 @@
             $element.css('display', 'none');
 
             if (domElement.currentStyle) {
-                return domElement.currentStyle(property);
+                return domElement.currentStyle[property];
             } else if (window.getComputedStyle) {
                 return document.defaultView.getComputedStyle(domElement, null).getPropertyValue(property);
             }
