@@ -59,7 +59,8 @@
                 selectNone: 'Select none',
                 quickDelete: '&times;',
                 searchplaceholder: 'Click here to search',
-                loadingData: 'Still loading data...'
+                loadingData: 'Still loading data...',
+                itemsSelected: '{$a} items selected'
             },
 
             events: {
@@ -128,7 +129,8 @@
             scrollTarget: undefined,
             maxHeight: undefined,
             converter: undefined,
-            asyncBatchSize: 300
+            asyncBatchSize: 300,
+            maxShow: 0
         },
 
         // initialize the plugin
@@ -239,7 +241,8 @@
                 .attr('placeholder', this.config.texts.searchplaceholder);
 
             this.$noResultsItem = $('<div class="sol-no-results"/>').html(this.config.texts.noItemsAvailable).hide();
-            this.$loadingData = $('<div class="sol-loading-data">').html(this.config.texts.loadingData);
+            this.$loadingData = $('<div class="sol-loading-data"/>').html(this.config.texts.loadingData);
+            this.$xItemsSelected = $('<div class="sol-results-count"/>');
 
             this.$caret = $('<div class="sol-caret-container"><b class="sol-caret"/></div>').click(function (e) {
                 self.toggle();
@@ -848,6 +851,18 @@
                 // only one option selectable
                 // close selection container
                 this.close();
+            }
+
+            var selected = this.$showSelectionContainer.children('.sol-selected-display-item');
+            if (this.config.maxShow != 0 && selected.length > this.config.maxShow) {
+                selected.hide();
+                var xitemstext = this.config.texts.itemsSelected.replace('{$a}', selected.length);
+                this.$xItemsSelected.html('<div class="sol-selected-display-item-text">' + xitemstext + '<div>');
+                this.$showSelectionContainer.append(this.$xItemsSelected);
+                this.$xItemsSelected.show();
+            } else {
+                selected.show();
+                this.$xItemsSelected.hide();
             }
 
             if (!skipCallback && $.isFunction(this.config.events.onChange)) {

@@ -266,7 +266,8 @@
     top: 4px;
 }
 
-.sol-selected-display-item {
+.sol-selected-display-item,
+.sol-results-count {
     display: inline-table;
     border: 1px solid #ccc;
     background: #f7f7f9;
