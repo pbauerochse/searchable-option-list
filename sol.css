@@ -87,10 +87,7 @@
 .sol-caret-container .sol-caret {
     position: relative;
     display: inline-block;
-
     left: 10px;
-    top: 15px;
-
     width: 0;
     height: 0;
     vertical-align: middle;
