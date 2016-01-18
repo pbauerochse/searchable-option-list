@@ -87,10 +87,7 @@
 .sol-caret-container .sol-caret {
     position: relative;
     display: inline-block;
-
     left: 10px;
-    top: 15px;
-
     width: 0;
     height: 0;
     vertical-align: middle;
@@ -266,7 +263,8 @@
     top: 4px;
 }
 
-.sol-selected-display-item {
+.sol-selected-display-item,
+.sol-results-count {
     display: inline-table;
     border: 1px solid #ccc;
     background: #f7f7f9;
