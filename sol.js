@@ -655,7 +655,8 @@
                 },
                 error: function (xhr, status, message) {
                     self._showErrorLabel('Error loading from url ' + url + ': ' + message);
-                }
+                },
+                dataType: 'json'
             });
         },
 
