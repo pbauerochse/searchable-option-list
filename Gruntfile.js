@@ -10,8 +10,8 @@ module.exports = function (grunt) {
 
         concat: {
             dist: {
-                src: ['src/sol-data-option.js', 'src/sol-data-optiongroup.js', 'src/sol-core.js'],
-                dest: 'build/sol-<%= pkg.version %>.js',
+                src: ['src/sol.js', 'src/sol-data-option.js', 'src/sol-data-optiongroup.js', 'src/sol-core.js'],
+                dest: 'build/sol.js',
                 options: {
                     banner: ";(function ($, window, document, undefined) {\n 'use strict';\n",
                     footer: "}(jQuery, window, document));"
@@ -29,7 +29,7 @@ module.exports = function (grunt) {
         copy: {
             dist: {
                 files: [
-                    {src: 'build/sol-<%= pkg.version %>.js', dest: 'dist/sol.js'}
+                    {src: 'build/sol.js', dest: 'dist/sol.js'}
                 ],
             },
         },
