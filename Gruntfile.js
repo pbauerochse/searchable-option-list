@@ -5,7 +5,8 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
 
         jshint: {
-            all: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js']
+            beforeconcat: ["Gruntfile.js", "src/**/*.js", "test/**/*.js"],
+            afterconcat: ["build/sol.js"]
         },
 
         concat: {

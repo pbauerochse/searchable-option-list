@@ -14,9 +14,14 @@ SearchableOptionList.OptionsBase.prototype = {
 /**
  * class for a select option
  */
-SearchableOptionList.Option = function (value, label) {
-    this.value = value;
-    this.label = label;
+SearchableOptionList.Option = function ($option) {
+    this.value = $option.val();
+    this.selected = $option.prop('selected');
+    this.disabled = $option.prop('disabled');
+    this.cssClass = $option.attr('class');
+    this.label = $option.html();
+    this.tooltip = $option.attr('title');
+    this.element = $option;
 };
 
 SearchableOptionList.Option.prototype = $.extend({}, SearchableOptionList.OptionsBase.prototype, {
@@ -30,8 +35,11 @@ SearchableOptionList.Option.prototype = $.extend({}, SearchableOptionList.Option
  * class for an option group containing any amount of
  * child options
  */
-SearchableOptionList.OptionGroup = function (label) {
-    this.label = label;
+SearchableOptionList.OptionGroup = function ($optgroup) {
+    this.label = $optgroup.attr('label');
+    this.tooltip = $optgroup.attr('title');
+    this.disabled = $optgroup.prop('disabled');
+    this.children = [];
 };
 
 SearchableOptionList.OptionGroup.prototype = $.extend({}, SearchableOptionList.OptionsBase.prototype, {
