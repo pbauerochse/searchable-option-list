@@ -1,2 +1,5 @@
-// sol core definitions
+// sol core functionality
 
+SearchableOptionList.SOL = function () {
+
+};
