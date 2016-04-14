@@ -2,7 +2,7 @@ SearchableOptionList.OptionGroup = function (label) {
     this.label = label;
 };
 
-SearchableOptionList.Option.prototype = {
+SearchableOptionList.OptionGroup.prototype = {
     type: 'optiongroup',    // fixed
     label: undefined,       // label string
     tooltip: undefined,     // tooltip string
