@@ -46,9 +46,8 @@ module.exports = function (grunt) {
 
         uglify: {
             options: {
-                banner: '/* <%= pkg.name %> v<%= pkg.version %> (<%= grunt.template.today("yyyy-mm-dd") %>)\n' +
-                '/* <%= pkg.homepage %>\n' +
-                '/* Licensed under the <%= pkg.license %> license',
+                banner: '/* <%= pkg.name %> v<%= pkg.version %> (<%= grunt.template.today("yyyy-mm-dd") %>)' +
+                ' - <%= pkg.homepage %> - Licensed under the <%= pkg.license %> license */',
                 sourceMap: true,
                 sourceMapName: 'dist/sol.min.js.map'
             },
