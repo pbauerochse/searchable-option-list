@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>SOL - Searchable Option List Visual Testing</title>
+
+    <link rel="stylesheet" href="../build/sol.css">
+</head>
+<body>
+
+<section>
+    <select id="multiselect-sol-with-groups" name="character" multiple="multiple">
+        <optgroup label="The Griffins">
+            <option value="Peter">Peter Griffin</option>
+            <option value="Lois">Lois Griffin</option>
+            <option value="Chris">Chris Griffin</option>
+            <option value="Meg">Meg Griffin</option>
+            <option value="Stewie">Stewie Griffin</option>
+        </optgroup>
+
+        <optgroup label="Peter's Friends">
+            <option value="Cleveland">Cleveland Brown</option>
+            <option value="Joe">Joe Swanson</option>
+            <option value="Quagmire">Glenn Quagmire</option>
+        </optgroup>
+
+        <option value="Evil Monkey">Evil Monkey</option>
+        <option value="Herbert">John Herbert</option>
+    </select>
+
+</section>
+
+<script src="http://code.jquery.com/jquery-2.2.3.min.js"></script>
+<script src="../build/sol.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $('#multiselect-sol-with-groups').searchableOptionList();
+    });
+</script>
+
+</body>
+</html>

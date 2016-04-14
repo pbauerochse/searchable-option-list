@@ -20,16 +20,26 @@ module.exports = function (grunt) {
         },
 
         qunit: {
-            all: ['test/**/*.html'],
+            all: ['test/unit-test-runner.html'],
             options: {
                 timeout: 10000
+            }
+        },
+
+        sass: {
+            dist: {
+                files: {
+                    'build/sol.css': 'src/sol.src.scss'
+                }
             }
         },
 
         copy: {
             dist: {
                 files: [
-                    {src: 'build/sol.js', dest: 'dist/sol.js'}
+                    {src: 'build/sol.js', dest: 'dist/sol.js'},
+                    {src: 'build/sol.css', dest: 'dist/sol.css'},
+                    {src: 'build/sol.css.map', dest: 'dist/sol.css.map'}
                 ]
             }
         },
@@ -45,14 +55,6 @@ module.exports = function (grunt) {
             build: {
                 src: 'dist/sol.js',
                 dest: 'dist/sol.min.js'
-            }
-        },
-
-        sass: {
-            dist: {
-                files: {
-                    'dist/sol.css': 'src/sol.src.scss'
-                }
             }
         },
 
@@ -76,6 +78,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
 
     // Default task(s).
-    grunt.registerTask('default', ['jshint', 'concat', 'qunit', 'copy', 'uglify', 'sass', 'cssmin']);
+    grunt.registerTask('default', ['jshint', 'concat', 'qunit', 'sass', 'copy', 'uglify', 'cssmin']);
 
 };
