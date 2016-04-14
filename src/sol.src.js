@@ -11,7 +11,6 @@
  */
 
 /*jslint nomen: true */
-;
 (function ($, window, document) {
     'use strict';
 
@@ -149,7 +148,7 @@
             if (typeof String.prototype.trim !== 'function') {
                 String.prototype.trim = function () {
                     return this.replace(/^\s+|\s+$/g, '');
-                }
+                };
             }
 
             this.config.multiple = this.config.multiple || this.$originalElement.attr('multiple');
@@ -297,8 +296,8 @@
                 stylesList = cssStylesAsString.split(/\;/);
 
                 // apply css inline styles to $container
-                for (var i = 0; i < stylesList.length; i++) {
-                    var splitted = stylesList[i].split(/\s*\:\s*/g);
+                for (var j = 0; j < stylesList.length; j++) {
+                    var splitted = stylesList[j].split(/\s*\:\s*/g);
 
                     if (splitted.length === 2) {
 
@@ -486,7 +485,7 @@
             } else {
                 // off
                 this.keyboardNavigationMode = false;
-                this.$selection.find('.sol-option.keyboard-selection')
+                this.$selection.find('.sol-option.keyboard-selection');
                 this.$selection.removeClass('sol-keyboard-navigation');
                 this.$selectionContainer.find('.sol-option.keyboard-selection').removeClass('keyboard-selection');
                 this.$selection.scrollTop(0);
@@ -855,7 +854,7 @@
             }
 
             var selected = this.$showSelectionContainer.children('.sol-selected-display-item');
-            if (this.config.maxShow != 0 && selected.length > this.config.maxShow) {
+            if (this.config.maxShow !== 0 && selected.length > this.config.maxShow) {
                 selected.hide();
                 var xitemstext = this.config.texts.itemsSelected.replace('{$a}', selected.length);
                 this.$xItemsSelected.html('<div class="sol-selected-display-item-text">' + xitemstext + '<div>');
