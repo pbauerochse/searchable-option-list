@@ -19,6 +19,10 @@
     opacity: 0.2; }
   100% {
     opacity: 1.0; } }
+.sol-error-message {
+  color: red;
+  font-weight: bold; }
+
 .sol-container * {
   margin: 0;
   padding: 0; }

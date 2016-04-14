@@ -10,7 +10,7 @@ module.exports = function (grunt) {
 
         concat: {
             dist: {
-                src: ['src/sol.js', 'src/sol-data-types.js', 'src/sol-core.js'],
+                src: ['src/sol.js', 'src/sol-scroll-listener.js', 'src/sol-data-types.js', 'src/sol-core.js'],
                 dest: 'build/sol.js',
                 options: {
                     banner: ";(function ($, window, document, undefined) {\n 'use strict';\n",

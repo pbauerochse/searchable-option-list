@@ -10,6 +10,28 @@
 <body>
 
 <section>
+    <select id="no-name-attribute" multiple="multiple">
+        <optgroup label="The Griffins">
+            <option value="Peter">Peter Griffin</option>
+            <option value="Lois">Lois Griffin</option>
+            <option value="Chris">Chris Griffin</option>
+            <option value="Meg">Meg Griffin</option>
+            <option value="Stewie">Stewie Griffin</option>
+        </optgroup>
+
+        <optgroup label="Peter's Friends">
+            <option value="Cleveland">Cleveland Brown</option>
+            <option value="Joe">Joe Swanson</option>
+            <option value="Quagmire">Glenn Quagmire</option>
+        </optgroup>
+
+        <option value="Evil Monkey">Evil Monkey</option>
+        <option value="Herbert">John Herbert</option>
+    </select>
+
+</section>
+
+<section>
     <select id="multiselect-sol-with-groups" name="character" multiple="multiple">
         <optgroup label="The Griffins">
             <option value="Peter">Peter Griffin</option>
@@ -35,6 +57,7 @@
 <script src="../build/sol.js"></script>
 <script type="text/javascript">
     $(function () {
+        $('#no-name-attribute').searchableOptionList();
         $('#multiselect-sol-with-groups').searchableOptionList();
     });
 </script>
