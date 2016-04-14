@@ -3,6 +3,7 @@
   "version": "2.1.0",
   "description": "Searchable Option List (SOL) is a jQuery plugin which enhances your HTML select elements and replaces them with a nice, searchable representation",
   "main": "sol.js",
+  "homepage": "https://github.com/pbauerochse/searchable-option-list",
   "scripts": {
     "test": "sol-test.js"
   },
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "grunt": "^1.0.1",
+    "grunt-contrib-concat": "^1.0.0",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-cssmin": "^1.0.1",
     "grunt-contrib-jshint": "^1.0.0",
