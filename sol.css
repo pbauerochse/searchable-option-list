@@ -43,9 +43,7 @@
     position: relative;
     height: 30px;
     line-height: 30px;
-    z-index: 9999;
-
-    background: #fff;
+   
     border: 1px solid #ccc;
     border-radius: 4px;
 
@@ -60,6 +58,9 @@
 }
 
 .sol-container.sol-active .sol-inner-container {
+    z-index: 9999;
+    background: #fff;
+
     border-color: rgba(82, 168, 236, 0.8);
 
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
