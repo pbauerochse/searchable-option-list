@@ -1,0 +1,28 @@
+<!DOCTYPE>
+<html>
+<head>
+	<title>Whoop</title>
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+	<script src="sol.js"></script>
+</head>
+<body>
+
+<select name="padde" id="padde">
+	<option value="1">1</option>
+	<option value="2">2</option>
+	<option value="3">3</option>
+	<option value="4">4</option>
+</select>
+
+<select name="padde1" class="sol"></select>
+<select name="padde2" class="sol"></select>
+
+<script type="text/javascript">
+	$(function () {
+		console.log($('#padde').searchableOptionList());
+		console.log($('.sol').searchableOptionList());
+	});
+</script>
+</body>
+
+</html>

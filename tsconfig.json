@@ -1,0 +1,15 @@
+{
+  "files": [
+	"src/sol-data-structure.ts",
+	"src/sol-options.ts",
+	"src/sol-scroll-listener.ts",
+	"src/sol.ts",
+	"src/sol-jquery.ts"
+  ],
+  "compilerOptions": {
+	"noImplicitAny": true,
+	"target": "es5",
+	"outFile": "dist/sol.js",
+	"sourceMap": true
+  }
+}
