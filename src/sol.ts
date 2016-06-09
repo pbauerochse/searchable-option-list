@@ -5,12 +5,13 @@ module SearchableOptionList {
 
         static DATA_KEY = "sol-element";
 
-        constructor(options:any) {
-            console.log("Init sol %o", options);
+        constructor() {
+            console.log("Construct SOL");
         }
 
         initialize(options:SolOptions) {
             console.log("invocation of initialize with %o", options);
+            console.log(options.texts.loadingData);
         }
 
     }

@@ -2,7 +2,7 @@
   "files": [
 	"src/sol-data-structure.ts",
 	"src/sol-options.ts",
-	"src/sol-scroll-listener.ts",
+	"src/sol-event-listeners.ts",
 	"src/sol.ts",
 	"src/sol-jquery.ts"
   ],

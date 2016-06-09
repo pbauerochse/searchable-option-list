@@ -42,42 +42,93 @@ var SearchableOptionList;
         return SolOptionGroup;
     }(BaseSolOption));
 })(SearchableOptionList || (SearchableOptionList = {}));
-/// <reference path="../includes/jquery.d.ts" />
+var SearchableOptionList;
+(function (SearchableOptionList) {
+    var OriginalElementDataProvider = (function () {
+        function OriginalElementDataProvider() {
+        }
+        OriginalElementDataProvider.prototype.fetchData = function (meh) {
+            console.log("Fetching data");
+        };
+        return OriginalElementDataProvider;
+    }());
+    SearchableOptionList.OriginalElementDataProvider = OriginalElementDataProvider;
+})(SearchableOptionList || (SearchableOptionList = {}));
+var SearchableOptionList;
+(function (SearchableOptionList) {
+    var DefaultEventListenerAdapter = (function () {
+        function DefaultEventListenerAdapter() {
+        }
+        DefaultEventListenerAdapter.prototype.doIt = function (meh) {
+            console.log("junge");
+        };
+        DefaultEventListenerAdapter.instance = new DefaultEventListenerAdapter();
+        return DefaultEventListenerAdapter;
+    }());
+    SearchableOptionList.DefaultEventListenerAdapter = DefaultEventListenerAdapter;
+})(SearchableOptionList || (SearchableOptionList = {}));
+var DefaultEventListenerAdapter = SearchableOptionList.DefaultEventListenerAdapter;
 var SearchableOptionList;
 (function (SearchableOptionList) {
     var SolOptions = (function () {
-        function SolOptions() {
+        function SolOptions(options) {
+            this.texts = new SolTexts();
+            this.events = new SolEventsHandler();
+            console.log("Creating new SolOptions from options");
         }
         return SolOptions;
     }());
     SearchableOptionList.SolOptions = SolOptions;
-})(SearchableOptionList || (SearchableOptionList = {}));
-var SearchableOptionList;
-(function (SearchableOptionList) {
-    var DefaultScrollLister = (function () {
-        function DefaultScrollLister() {
+    var SolTexts = (function () {
+        function SolTexts() {
+            this.noItemsAvailable = SolTexts.noItemsAvailable;
+            this.selectAll = SolTexts.selectAll;
+            this.selectNone = SolTexts.selectNone;
+            this.quickDelete = SolTexts.quickDelete;
+            this.searchplaceholder = SolTexts.searchplaceholder;
+            this.loadingData = SolTexts.loadingData;
+            this.itemsSelected = SolTexts.itemsSelected;
         }
-        DefaultScrollLister.prototype.doIt = function (meh) {
-            console.log("junge");
-        };
-        return DefaultScrollLister;
+        SolTexts.noItemsAvailable = 'No entries found';
+        SolTexts.selectAll = 'Select all';
+        SolTexts.selectNone = 'Select none';
+        SolTexts.quickDelete = '&times;';
+        SolTexts.searchplaceholder = 'Click here to search';
+        SolTexts.loadingData = 'Still loading data...';
+        SolTexts.itemsSelected = '{$a} items selected';
+        return SolTexts;
+    }());
+    SearchableOptionList.SolTexts = SolTexts;
+    var SolEventsHandler = (function () {
+        function SolEventsHandler() {
+            this.onInitialized = SearchableOptionList.DefaultEventListenerAdapter.instance;
+            this.onRendered = SearchableOptionList.DefaultEventListenerAdapter.instance;
+            this.onOpen = SearchableOptionList.DefaultEventListenerAdapter.instance;
+            this.onClose = SearchableOptionList.DefaultEventListenerAdapter.instance;
+            this.onChange = SearchableOptionList.DefaultEventListenerAdapter.instance;
+            this.onScroll = SearchableOptionList.DefaultEventListenerAdapter.instance;
+        }
+        return SolEventsHandler;
     }());
 })(SearchableOptionList || (SearchableOptionList = {}));
 /// <reference path="../includes/jquery.d.ts" />
 var SearchableOptionList;
 (function (SearchableOptionList) {
     var Sol = (function () {
-        function Sol(options) {
-            console.log("Init sol %o", options);
+        function Sol() {
+            console.log("Construct SOL");
         }
         Sol.prototype.initialize = function (options) {
             console.log("invocation of initialize with %o", options);
+            console.log(options.texts.loadingData);
         };
         Sol.DATA_KEY = "sol-element";
         return Sol;
     }());
     SearchableOptionList.Sol = Sol;
 })(SearchableOptionList || (SearchableOptionList = {}));
+var SolOptions = SearchableOptionList.SolOptions;
+var Sol = SearchableOptionList.Sol;
 /**
  * Boilerplate code to expose sol as a jQuery plugin
  */
@@ -85,18 +136,22 @@ var SearchableOptionList;
     $.fn.searchableOptionList = function (options) {
         var result = [];
         this.each(function () {
-            var $this = $(this), $alreadyInitializedSol = $this.data(SearchableOptionList.Sol.DATA_KEY);
+            var $this = $(this), $alreadyInitializedSol = $this.data(Sol.DATA_KEY);
             if ($alreadyInitializedSol) {
                 result.push($alreadyInitializedSol);
             }
             else {
-                var sol_1 = new SearchableOptionList.Sol(options);
+                var sol_1 = new Sol();
+                var solOptions_1 = new SolOptions(options);
                 setTimeout(function () {
-                    sol_1.initialize();
+                    sol_1.initialize(solOptions_1);
                 }, 0);
                 result.push(sol_1);
             }
         });
+        if (result.length === 1) {
+            return result[0];
+        }
         return result;
     };
 })(jQuery, window, document);

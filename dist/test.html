@@ -20,7 +20,10 @@
 <script type="text/javascript">
 	$(function () {
 		console.log($('#padde').searchableOptionList());
+		SearchableOptionList.SolTexts.noItemsAvailable = "Junge";
 		console.log($('.sol').searchableOptionList());
+
+		console.log(SearchableOptionList.DefaultEventListenerAdapter.instance);
 	});
 </script>
 </body>
