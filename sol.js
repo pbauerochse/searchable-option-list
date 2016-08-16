@@ -124,6 +124,7 @@
 
             useBracketParameters: false,
             multiple: undefined,
+            resultsContainer: undefined, // jquery element where the results should be appended
             showSelectionBelowList: false,
             allowNullSelection: false,
             scrollTarget: undefined,
@@ -267,11 +268,18 @@
 
             // add selected items display container
             this.$showSelectionContainer = $('<div class="sol-current-selection"/>');
-            if (this.config.showSelectionBelowList) {
-                this.$showSelectionContainer.insertAfter(this.$innerContainer);
+            
+            var $el = this.config.resultsContainer || this.$innerContainer
+            if (this.config.resultsContainer) {
+                this.$showSelectionContainer.appendTo($el)
             } else {
-                this.$showSelectionContainer.insertBefore(this.$innerContainer);
+                if (this.config.showSelectionBelowList) {
+                    this.$showSelectionContainer.insertAfter($el);
+                } else {
+                    this.$showSelectionContainer.insertBefore($el);
+                } 
             }
+            
 
             // dimensions
             if (this.config.maxHeight) {
