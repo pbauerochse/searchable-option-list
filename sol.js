@@ -125,6 +125,7 @@
             useBracketParameters: false,
             multiple: undefined,
             resultsContainer: undefined, // jquery element where the results should be appended
+            closeOnClick: true, // close when user clicked 'select all' or 'deselect all'
             showSelectionBelowList: false,
             allowNullSelection: false,
             scrollTarget: undefined,
@@ -992,7 +993,7 @@
                     .prop('checked', true)
                     .trigger('change', true);
 
-                this.close();
+                this.options.closeOnClick && this.close();
 
                 if ($.isFunction(this.config.events.onChange)) {
                     this.config.events.onChange.call(this, this, $changedInputs);
@@ -1007,7 +1008,7 @@
                     .prop('checked', false)
                     .trigger('change', true);
 
-                this.close();
+                this.options.closeOnClick && this.close();
 
                 if ($.isFunction(this.config.events.onChange)) {
                     this.config.events.onChange.call(this, this, $changedInputs);
