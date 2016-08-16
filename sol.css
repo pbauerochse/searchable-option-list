@@ -213,11 +213,11 @@
 }
 
 .sol-option {
-    padding: 5px 10px;
     display: block;
 }
 
 .sol-label {
+    padding: 5px 10px;
     display: block;
     position: relative;
 }
