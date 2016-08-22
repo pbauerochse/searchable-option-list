@@ -124,6 +124,8 @@
 
             useBracketParameters: false,
             multiple: undefined,
+            resultsContainer: undefined, // jquery element where the results should be appended
+            closeOnClick: true, // close when user clicked 'select all' or 'deselect all'
             showSelectionBelowList: false,
             allowNullSelection: false,
             scrollTarget: undefined,
@@ -267,11 +269,18 @@
 
             // add selected items display container
             this.$showSelectionContainer = $('<div class="sol-current-selection"/>');
-            if (this.config.showSelectionBelowList) {
-                this.$showSelectionContainer.insertAfter(this.$innerContainer);
+            
+            var $el = this.config.resultsContainer || this.$innerContainer
+            if (this.config.resultsContainer) {
+                this.$showSelectionContainer.appendTo($el)
             } else {
-                this.$showSelectionContainer.insertBefore(this.$innerContainer);
+                if (this.config.showSelectionBelowList) {
+                    this.$showSelectionContainer.insertAfter($el);
+                } else {
+                    this.$showSelectionContainer.insertBefore($el);
+                } 
             }
+            
 
             // dimensions
             if (this.config.maxHeight) {
@@ -984,7 +993,7 @@
                     .prop('checked', true)
                     .trigger('change', true);
 
-                this.close();
+                this.options.closeOnClick && this.close();
 
                 if ($.isFunction(this.config.events.onChange)) {
                     this.config.events.onChange.call(this, this, $changedInputs);
@@ -999,7 +1008,7 @@
                     .prop('checked', false)
                     .trigger('change', true);
 
-                this.close();
+                this.options.closeOnClick && this.close();
 
                 if ($.isFunction(this.config.events.onChange)) {
                     this.config.events.onChange.call(this, this, $changedInputs);
