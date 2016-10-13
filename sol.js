@@ -993,7 +993,7 @@
                     .prop('checked', true)
                     .trigger('change', true);
 
-                this.options.closeOnClick && this.close();
+                this.config.closeOnClick && this.close();
 
                 if ($.isFunction(this.config.events.onChange)) {
                     this.config.events.onChange.call(this, this, $changedInputs);
@@ -1008,7 +1008,7 @@
                     .prop('checked', false)
                     .trigger('change', true);
 
-                this.options.closeOnClick && this.close();
+                this.config.closeOnClick && this.close();
 
                 if ($.isFunction(this.config.events.onChange)) {
                     this.config.events.onChange.call(this, this, $changedInputs);
