@@ -269,7 +269,7 @@
 
             // add selected items display container
             this.$showSelectionContainer = $('<div class="sol-current-selection"/>');
-            
+
             var $el = this.config.resultsContainer || this.$innerContainer
             if (this.config.resultsContainer) {
                 this.$showSelectionContainer.appendTo($el)
@@ -278,9 +278,9 @@
                     this.$showSelectionContainer.insertAfter($el);
                 } else {
                     this.$showSelectionContainer.insertBefore($el);
-                } 
+                }
             }
-            
+
 
             // dimensions
             if (this.config.maxHeight) {
@@ -1000,7 +1000,25 @@
                 }
             }
         },
+        invert: function() {
+            if (this.config.multiple) {
+                var $closedInputs = this.$selectionContainer
+                    .find('input[type="checkbox"]:not([disabled], :checked)')
+                var $openedInputs = this.$selectionContainer
+                    .find('input[type="checkbox"]').filter('[disabled], :checked')
 
+                $openedInputs.prop('checked', false)
+                             .trigger('change', true);
+                $closedInputs.prop('checked', true)
+                             .trigger('change', true)
+
+                this.options.closeOnClick && this.close();
+
+                if ($.isFunction(this.config.events.onChange)) {
+                    this.config.events.onChange.call(this, this, $openedInputs.add($closedInputs));
+                }
+            }
+        },
         deselectAll: function () {
             if (this.config.multiple) {
                 var $changedInputs = this.$selectionContainer
