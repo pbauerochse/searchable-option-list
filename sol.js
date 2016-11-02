@@ -889,6 +889,7 @@
                 $displayItemText = $('<span class="sol-selected-display-item-text" />').html(solOptionItem.label);
                 if (this.config.progressbars) {
                     var $displayItemPBar = $('<div class="progressbar" />');
+                    var isDragging = false;
                     $displayItemPBar.progressbar({
                         min: 0.0,
                         max: 100.0,
