@@ -273,6 +273,7 @@
     margin-right: 5px;
     margin-bottom: 5px;
     border-collapse: separate;
+    width: 500px;
 
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
@@ -329,4 +330,8 @@
     animation-duration: 1s;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
+}
+
+.ui-progressbar {
+    float: right;
 }
