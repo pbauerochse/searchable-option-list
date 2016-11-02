@@ -887,8 +887,48 @@
 
             if (!$existingDisplayItem) {
                 $displayItemText = $('<span class="sol-selected-display-item-text" />').html(solOptionItem.label);
+                if (this.config.progressbars) {
+                    var $displayItemPBar = $('<div class="progressbar" />');
+                    $displayItemPBar.progressbar({
+                        min: 0.0,
+                        max: 100.0,
+                        value: 50
+                    });
+                    
+                    $displayItemPBar.mousedown(function() {
+                        isDragging = true;
+                    })
+                        .mousemove(function(e) {
+                            if (isDragging) {
+                                var x = e.pageX - this.offsetLeft;
+                                
+                                //Uncomment the following line to activate alert
+                                //alert('Current position: ' + document.getElementById('progressBar').position);
+                                
+                                //Save position before the click
+                                var startPos = $(this).progressbar('value');
+                                
+                                //Convert x value to progress range
+                                var xconvert = x / 300 * 100.0; // because width is 300px and you need a value in [0,1] range
+                                var finalx = (xconvert).toFixed(1); // round up to one digit after coma
+                                
+                                //Uncomment the following line to activate alert
+                                //alert('Click value: ' + finalx);
+                                
+                                //If you don't want change progress bar value after click comment the following line
+                                $(this).progressbar('value', parseInt(finalx));
+                                
+                                //$(this).parent().children()[1].innerHTML = finalx;
+                            }
+                        })
+                        .mouseup(function() {
+                            isDragging = false;      
+                        });
+                }
+
                 $existingDisplayItem = $('<div class="sol-selected-display-item"/>')
                     .append($displayItemText)
+                    .append($displayItemPBar)
                     .attr('title', solOptionItem.tooltip)
                     .appendTo(this.$showSelectionContainer);
 
