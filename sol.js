@@ -59,7 +59,7 @@
                 selectNone: 'Select none',
                 quickDelete: '&times;',
                 searchplaceholder: 'Click here to search',
-                loadingData: 'Still loading data...',
+                loadingData: 'Still no data...',
                 itemsSelected: '{$a} items selected'
             },
 
@@ -505,7 +505,7 @@
         _applySearchTermFilter: function () {
 			var searchTerm = this.$input.val(),
 					lowerCased = (searchTerm || '').toLowerCase().trim();
-			if (lowerCased.length > this.config.minsearch && typeof this.config.data === (typeof 'a string')) {				
+			if (lowerCased.length >= this.config.minLength && typeof this.config.data === (typeof 'a string')) {				
 				this._loadItemsFromUrl(this.config.data, lowerCased);
                 this._findTerms(this.items, lowerCased);
 			}			
@@ -657,8 +657,9 @@
             var self = this;
             $.ajax(url, {
                 success: function (actualData) {
-                    self.items = self._invokeConverterIfNeccessary(actualData);
+                    self.items = self._invokeConverterIfNecessary(actualData.message);
                     if (self.items) {
+                    	self.$selection.find(".sol-option").remove();
                         self._processDataItems(self.items);
                     }
                 },
@@ -694,7 +695,10 @@
                 dataProcessedFunction = function () {
                     // hide "loading data"
                     this.$loadingData.remove();
+                    // initialize only once
+                    if (this.$actionButtons == undefined) {
                     this._initializeSelectAll();
+                    }
 
                     if ($.isFunction(this.config.events.onInitialized)) {
                         this.config.events.onInitialized.call(this, this, solItems);
@@ -902,7 +906,7 @@
                     })
                         .mousemove(function(e) {
                             if (isDragging) {
-                                var x = e.pageX - this.offsetLeft;
+                                var x = e.pageX - this.offsetLeft; // OR e.offsetX?
                                 
                                 //Uncomment the following line to activate alert
                                 //alert('Current position: ' + document.getElementById('progressBar').position);
@@ -911,7 +915,7 @@
                                 var startPos = $(this).progressbar('value');
                                 
                                 //Convert x value to progress range
-                                var xconvert = x / 300 * 100.0; // because width is 300px and you need a value in [0,1] range
+                                var xconvert = x / parseInt($(this).css('width')) * 100.0;
                                 var finalx = (xconvert).toFixed(1); // round up to one digit after coma
                                 
                                 //Uncomment the following line to activate alert
