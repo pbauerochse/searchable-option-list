@@ -503,20 +503,22 @@
         },
 
         _applySearchTermFilter: function () {
-            if (!this.items || this.items.length === 0) {
+			var searchTerm = this.$input.val(),
+					lowerCased = (searchTerm || '').toLowerCase().trim();
+			if (lowerCased.length > this.config.minsearch && typeof this.config.data === (typeof 'a string')) {				
+				this._loadItemsFromUrl(this.config.data, lowerCased);
+                this._findTerms(this.items, lowerCased);
+			}			
+            else if (!this.items || this.items.length === 0) {
                 return;
             }
-
-            var searchTerm = this.$input.val(),
-                lowerCased = (searchTerm || '').toLowerCase();
-
-            // show previously filtered elements again
-            this.$selectionContainer.find('.sol-filtered-search').removeClass('sol-filtered-search');
-            this._setNoResultsItemVisible(false);
-
-            if (lowerCased.trim().length > 0) {
-                this._findTerms(this.items, lowerCased);
-            }
+            else if (lowerCased.length > 0) {
+				// show previously filtered elements again
+				this.$selectionContainer.find('.sol-filtered-search').removeClass('sol-filtered-search');
+				this._setNoResultsItemVisible(false);
+				
+				this._findTerms(this.items, lowerCased);
+			}
 
             // call onScroll to position the popup again
             // important if showing popup above list
@@ -562,10 +564,8 @@
             } else if ($.isFunction(this.config.data)) {
                 this.items = this._fetchDataFromFunction(this.config.data);
             } else if ($.isArray(this.config.data)) {
-                this.items = this._fetchDataFromArray(this.config.data);
-            } else if (typeof this.config.data === (typeof 'a string')) {
-                this._loadItemsFromUrl(this.config.data);
-            } else {
+                this.items = this._fetchDataFromArray(this.config.data); 
+            } else if (typeof this.config.data !== (typeof 'a string')) {
                 this._showErrorLabel('Unknown data type');
             }
 
@@ -653,7 +653,7 @@
             return this._invokeConverterIfNeccessary(dataArray);
         },
 
-        _loadItemsFromUrl: function (url) {
+        _loadItemsFromUrl: function (url, term) {
             var self = this;
             $.ajax(url, {
                 success: function (actualData) {
@@ -665,6 +665,7 @@
                 error: function (xhr, status, message) {
                     self._showErrorLabel('Error loading from url ' + url + ': ' + message);
                 },
+                data: { "term": term },
                 dataType: 'json'
             });
         },
