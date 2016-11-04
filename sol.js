@@ -160,7 +160,7 @@
                 this.config.scrollTarget = $(window);
             }
 
-            this._registerWindowEventsIfNeccessary();
+            this._registerWindowEventsIfNecessary();
             this._initializeUiElements();
             this._initializeInputEvents();
 
@@ -198,7 +198,7 @@
         },
 
         // register click handler to determine when to trigger the close event
-        _registerWindowEventsIfNeccessary: function () {
+        _registerWindowEventsIfNecessary: function () {
             if (!window[this.WINDOW_EVENTS_KEY]) {
                 $(document).click(function (event) {
                     // if clicked inside a sol element close all others
@@ -599,10 +599,10 @@
                         self._showErrorLabel('Invalid element found in select: ' + itemTagName + '. Only option and optgroup are allowed');
                     }
                 });
-                return this._invokeConverterIfNeccessary(solData);
+                return this._invokeConverterIfNecessary(solData);
             } else if (this.$originalElement.data('sol-data')) {
                 var solDataAttributeValue = this.$originalElement.data('sol-data');
-                return this._invokeConverterIfNeccessary(solDataAttributeValue);
+                return this._invokeConverterIfNecessary(solDataAttributeValue);
             } else {
                 this._showErrorLabel('Could not determine data from original element. Must be a select or data must be provided as data-sol-data="" attribute');
             }
@@ -646,11 +646,11 @@
         },
 
         _fetchDataFromFunction: function (dataFunction) {
-            return this._invokeConverterIfNeccessary(dataFunction(this));
+            return this._invokeConverterIfNecessary(dataFunction(this));
         },
 
         _fetchDataFromArray: function (dataArray) {
-            return this._invokeConverterIfNeccessary(dataArray);
+            return this._invokeConverterIfNecessary(dataArray);
         },
 
         _loadItemsFromUrl: function (url, term) {
@@ -671,7 +671,7 @@
             });
         },
 
-        _invokeConverterIfNeccessary: function (dataItems) {
+        _invokeConverterIfNecessary: function (dataItems) {
             if ($.isFunction(this.config.converter)) {
                 return this.config.converter.call(this, this, dataItems);
             }
@@ -836,7 +836,7 @@
 
         _selectionChange: function ($changeItem, skipCallback) {
 
-            // apply state to original select if neccessary
+            // apply state to original select if necessary
             // helps to keep old legacy code running which depends
             // on retrieving the value via jQuery option selectors
             // e.g. $('#myPreviousSelectWhichNowIsSol').val()
