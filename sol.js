@@ -59,7 +59,7 @@
                 selectNone: 'Select none',
                 quickDelete: '&times;',
                 searchplaceholder: 'Click here to search',
-                loadingData: 'Still loading data...',
+                loadingData: 'Still no data...',
                 itemsSelected: '{$a} items selected'
             },
 
@@ -160,7 +160,7 @@
                 this.config.scrollTarget = $(window);
             }
 
-            this._registerWindowEventsIfNeccessary();
+            this._registerWindowEventsIfNecessary();
             this._initializeUiElements();
             this._initializeInputEvents();
 
@@ -198,7 +198,7 @@
         },
 
         // register click handler to determine when to trigger the close event
-        _registerWindowEventsIfNeccessary: function () {
+        _registerWindowEventsIfNecessary: function () {
             if (!window[this.WINDOW_EVENTS_KEY]) {
                 $(document).click(function (event) {
                     // if clicked inside a sol element close all others
@@ -503,20 +503,22 @@
         },
 
         _applySearchTermFilter: function () {
-            if (!this.items || this.items.length === 0) {
+			var searchTerm = this.$input.val(),
+					lowerCased = (searchTerm || '').toLowerCase().trim();
+			if (lowerCased.length >= this.config.minLength && typeof this.config.data === (typeof 'a string')) {				
+				this._loadItemsFromUrl(this.config.data, lowerCased);
+                this._findTerms(this.items, lowerCased);
+			}			
+            else if (!this.items || this.items.length === 0) {
                 return;
             }
-
-            var searchTerm = this.$input.val(),
-                lowerCased = (searchTerm || '').toLowerCase();
-
-            // show previously filtered elements again
-            this.$selectionContainer.find('.sol-filtered-search').removeClass('sol-filtered-search');
-            this._setNoResultsItemVisible(false);
-
-            if (lowerCased.trim().length > 0) {
-                this._findTerms(this.items, lowerCased);
-            }
+            else if (lowerCased.length > 0) {
+				// show previously filtered elements again
+				this.$selectionContainer.find('.sol-filtered-search').removeClass('sol-filtered-search');
+				this._setNoResultsItemVisible(false);
+				
+				this._findTerms(this.items, lowerCased);
+			}
 
             // call onScroll to position the popup again
             // important if showing popup above list
@@ -562,10 +564,8 @@
             } else if ($.isFunction(this.config.data)) {
                 this.items = this._fetchDataFromFunction(this.config.data);
             } else if ($.isArray(this.config.data)) {
-                this.items = this._fetchDataFromArray(this.config.data);
-            } else if (typeof this.config.data === (typeof 'a string')) {
-                this._loadItemsFromUrl(this.config.data);
-            } else {
+                this.items = this._fetchDataFromArray(this.config.data); 
+            } else if (typeof this.config.data !== (typeof 'a string')) {
                 this._showErrorLabel('Unknown data type');
             }
 
@@ -599,10 +599,10 @@
                         self._showErrorLabel('Invalid element found in select: ' + itemTagName + '. Only option and optgroup are allowed');
                     }
                 });
-                return this._invokeConverterIfNeccessary(solData);
+                return this._invokeConverterIfNecessary(solData);
             } else if (this.$originalElement.data('sol-data')) {
                 var solDataAttributeValue = this.$originalElement.data('sol-data');
-                return this._invokeConverterIfNeccessary(solDataAttributeValue);
+                return this._invokeConverterIfNecessary(solDataAttributeValue);
             } else {
                 this._showErrorLabel('Could not determine data from original element. Must be a select or data must be provided as data-sol-data="" attribute');
             }
@@ -646,30 +646,32 @@
         },
 
         _fetchDataFromFunction: function (dataFunction) {
-            return this._invokeConverterIfNeccessary(dataFunction(this));
+            return this._invokeConverterIfNecessary(dataFunction(this));
         },
 
         _fetchDataFromArray: function (dataArray) {
-            return this._invokeConverterIfNeccessary(dataArray);
+            return this._invokeConverterIfNecessary(dataArray);
         },
 
-        _loadItemsFromUrl: function (url) {
+        _loadItemsFromUrl: function (url, term) {
             var self = this;
             $.ajax(url, {
                 success: function (actualData) {
-                    self.items = self._invokeConverterIfNeccessary(actualData);
+                    self.items = self._invokeConverterIfNecessary(actualData.message);
                     if (self.items) {
+                    	self.$selection.find(".sol-option").remove();
                         self._processDataItems(self.items);
                     }
                 },
                 error: function (xhr, status, message) {
                     self._showErrorLabel('Error loading from url ' + url + ': ' + message);
                 },
+                data: { "term": term },
                 dataType: 'json'
             });
         },
 
-        _invokeConverterIfNeccessary: function (dataItems) {
+        _invokeConverterIfNecessary: function (dataItems) {
             if ($.isFunction(this.config.converter)) {
                 return this.config.converter.call(this, this, dataItems);
             }
@@ -693,7 +695,10 @@
                 dataProcessedFunction = function () {
                     // hide "loading data"
                     this.$loadingData.remove();
+                    // initialize only once
+                    if (this.$actionButtons == undefined) {
                     this._initializeSelectAll();
+                    }
 
                     if ($.isFunction(this.config.events.onInitialized)) {
                         this.config.events.onInitialized.call(this, this, solItems);
@@ -831,7 +836,7 @@
 
         _selectionChange: function ($changeItem, skipCallback) {
 
-            // apply state to original select if neccessary
+            // apply state to original select if necessary
             // helps to keep old legacy code running which depends
             // on retrieving the value via jQuery option selectors
             // e.g. $('#myPreviousSelectWhichNowIsSol').val()
@@ -887,8 +892,49 @@
 
             if (!$existingDisplayItem) {
                 $displayItemText = $('<span class="sol-selected-display-item-text" />').html(solOptionItem.label);
+                if (this.config.progressbars) {
+                    var $displayItemPBar = $('<div class="progressbar" />');
+                    var isDragging = false;
+                    $displayItemPBar.progressbar({
+                        min: 0.0,
+                        max: 100.0,
+                        value: 50
+                    });
+                    
+                    $displayItemPBar.mousedown(function() {
+                        isDragging = true;
+                    })
+                        .mousemove(function(e) {
+                            if (isDragging) {
+                                var x = e.pageX - this.offsetLeft; // OR e.offsetX?
+                                
+                                //Uncomment the following line to activate alert
+                                //alert('Current position: ' + document.getElementById('progressBar').position);
+                                
+                                //Save position before the click
+                                var startPos = $(this).progressbar('value');
+                                
+                                //Convert x value to progress range
+                                var xconvert = x / parseInt($(this).css('width')) * 100.0;
+                                var finalx = (xconvert).toFixed(1); // round up to one digit after coma
+                                
+                                //Uncomment the following line to activate alert
+                                //alert('Click value: ' + finalx);
+                                
+                                //If you don't want change progress bar value after click comment the following line
+                                $(this).progressbar('value', parseInt(finalx));
+                                
+                                //$(this).parent().children()[1].innerHTML = finalx;
+                            }
+                        })
+                        .mouseup(function() {
+                            isDragging = false;      
+                        });
+                }
+
                 $existingDisplayItem = $('<div class="sol-selected-display-item"/>')
                     .append($displayItemText)
+                    .append($displayItemPBar)
                     .attr('title', solOptionItem.tooltip)
                     .appendTo(this.$showSelectionContainer);
 
