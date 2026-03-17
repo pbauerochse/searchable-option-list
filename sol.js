@@ -200,7 +200,7 @@
         // register click handler to determine when to trigger the close event
         _registerWindowEventsIfNeccessary: function () {
             if (!window[this.WINDOW_EVENTS_KEY]) {
-                $(document).click(function (event) {
+                $(document).on( "click", function (event) {
                     // if clicked inside a sol element close all others
                     // else close all sol containers
 
@@ -234,7 +234,7 @@
             var self = this;
 
             this.internalScrollWrapper = function () {
-                if ($.isFunction(self.config.events.onScroll)) {
+                if ( typeof self.config.events.onScroll === "function" ) {
                     self.config.events.onScroll.call(self);
                 }
             };
@@ -246,7 +246,7 @@
             this.$loadingData = $('<div class="sol-loading-data"/>').html(this.config.texts.loadingData);
             this.$xItemsSelected = $('<div class="sol-results-count"/>');
 
-            this.$caret = $('<div class="sol-caret-container"><b class="sol-caret"/></div>').click(function (e) {
+            this.$caret = $('<div class="sol-caret-container"><b class="sol-caret"/></div>').on( "click", function (e) {
                 self.toggle();
                 e.preventDefault();
                 return false;
@@ -325,7 +325,7 @@
                 this.$container.css('width', this._getActualCssPropertyValue(this.$originalElement, 'width'));
             }
 
-            if ($.isFunction(this.config.events.onRendered)) {
+            if ( typeof this.config.events.onRendered === "function" ) {
                 this.config.events.onRendered.call(this, this);
             }
         },
@@ -371,7 +371,7 @@
                         }
                     });
 
-                    if ($changedItems.length > 0 && $.isFunction(self.config.events.onChange)) {
+                    if ($changedItems.length > 0 &&  typeof self.config.events.onChange === "function" ) {
                         self.config.events.onChange.call(self, self, $changedItems);
                     }
                 };
@@ -398,7 +398,7 @@
 
             // text input events
             this.$input
-                .focus(function () {
+                .on( "focus", function () {
                     self.open();
                 })
                 .on('propertychange input', function (e) {
@@ -520,7 +520,7 @@
 
             // call onScroll to position the popup again
             // important if showing popup above list
-            if ($.isFunction(this.config.events.onScroll)) {
+            if ( typeof this.config.events.onScroll === "function" ) {
                 this.config.events.onScroll.call(this);
             }
         },
@@ -559,7 +559,7 @@
         _initializeData: function () {
             if (!this.config.data) {
                 this.items = this._detectDataFromOriginalElement();
-            } else if ($.isFunction(this.config.data)) {
+            } else if ( typeof this.config.data === "function" ) {
                 this.items = this._fetchDataFromFunction(this.config.data);
             } else if ($.isArray(this.config.data)) {
                 this.items = this._fetchDataFromArray(this.config.data);
@@ -670,7 +670,7 @@
         },
 
         _invokeConverterIfNeccessary: function (dataItems) {
-            if ($.isFunction(this.config.converter)) {
+            if ( typeof this.config.converter === "function" ) {
                 return this.config.converter.call(this, this, dataItems);
             }
             return dataItems;
@@ -695,7 +695,7 @@
                     this.$loadingData.remove();
                     this._initializeSelectAll();
 
-                    if ($.isFunction(this.config.events.onInitialized)) {
+                    if ( typeof this.config.events.onInitialized === "function" ) {
                         this.config.events.onInitialized.call(this, this, solItems);
                     }
                 },
@@ -810,15 +810,15 @@
 
         _initializeSelectAll: function () {
             // multiple values selectable
-            if (this.config.showSelectAll === true || ($.isFunction(this.config.showSelectAll) && this.config.showSelectAll.call(this))) {
+            if (this.config.showSelectAll === true || ( typeof this.config.showSelectAll === "function"  && this.config.showSelectAll.call(this))) {
                 // buttons for (de-)select all
                 var self = this,
-                    $deselectAllButton = $('<a href="#" class="sol-deselect-all"/>').html(this.config.texts.selectNone).click(function (e) {
+                    $deselectAllButton = $('<a href="#" class="sol-deselect-all"/>').html(this.config.texts.selectNone).on( "click", function (e) {
                         self.deselectAll();
                         e.preventDefault();
                         return false;
                     }),
-                    $selectAllButton = $('<a href="#" class="sol-select-all"/>').html(this.config.texts.selectAll).click(function (e) {
+                    $selectAllButton = $('<a href="#" class="sol-select-all"/>').html(this.config.texts.selectAll).on( "click", function (e) {
                         self.selectAll();
                         e.preventDefault();
                         return false;
@@ -875,7 +875,7 @@
                 this.$xItemsSelected.hide();
             }
 
-            if (!skipCallback && $.isFunction(this.config.events.onChange)) {
+            if (!skipCallback &&  typeof this.config.events.onChange === "function" ) {
                 this.config.events.onChange.call(this, this, $changeItem);
             }
         },
@@ -896,7 +896,7 @@
                 if ((this.config.multiple || this.config.allowNullSelection) && !$changedItem.prop('disabled')) {
                     $('<span class="sol-quick-delete"/>')
                         .html(this.config.texts.quickDelete)
-                        .click(function () {
+                        .on( "click", function () {
                             $changedItem
                                 .prop('checked', false)
                                 .trigger('change');
@@ -958,7 +958,7 @@
                 this.config.scrollTarget.bind('scroll', this.internalScrollWrapper).trigger('scroll');
                 $(window).on('resize', this.internalScrollWrapper);
 
-                if ($.isFunction(this.config.events.onOpen)) {
+                if ( typeof this.config.events.onOpen === "function" ) {
                     this.config.events.onOpen.call(this, this);
                 }
             }
@@ -980,7 +980,7 @@
                 // clear to recalculate position again the next time sol is opened
                 this.config.displayContainerAboveInput = undefined;
 
-                if ($.isFunction(this.config.events.onClose)) {
+                if ( typeof this.config.events.onClose === "function" ) {
                     this.config.events.onClose.call(this, this);
                 }
             }
@@ -995,7 +995,7 @@
 
                 this.config.closeOnClick && this.close();
 
-                if ($.isFunction(this.config.events.onChange)) {
+                if ( typeof this.config.events.onChange === "function" ) {
                     this.config.events.onChange.call(this, this, $changedInputs);
                 }
             }
@@ -1014,7 +1014,7 @@
 
                 this.options.closeOnClick && this.close();
 
-                if ($.isFunction(this.config.events.onChange)) {
+                if ( typeof this.config.events.onChange === "function" ) {
                     this.config.events.onChange.call(this, this, $openedInputs.add($closedInputs));
                 }
             }
@@ -1028,7 +1028,7 @@
 
                 this.config.closeOnClick && this.close();
 
-                if ($.isFunction(this.config.events.onChange)) {
+                if ( typeof this.config.events.onChange === "function" ) {
                     this.config.events.onChange.call(this, this, $changedInputs);
                 }
             }
