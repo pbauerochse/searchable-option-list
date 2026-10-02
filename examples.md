@@ -12,6 +12,7 @@ Examples
 
 Here is an example of what you will get when you use SOL
 
+<div>
 <select id="demonstration" name="character0" style="width: 250px" multiple="multiple">
     <optgroup label="The Griffins">
         <option value="Peter" selected>Peter Griffin</option>
@@ -49,6 +50,7 @@ Here is an example of what you will get when you use SOL
     <option value="Jeffrey">Jeffrey</option>
     <option value="Carl">Carl</option>    
 </select>
+</div>
 
 You may also use the up and down arrow key to navigate to a certain item and toggle the selection state by hitting the space bar.
 
@@ -95,6 +97,7 @@ The most basic usage is to initialize the plugin without any parameters using an
 
 This will produce the following result:
 
+<div>
 <select class="basicSelect" name="character1">
     <option value="Peter">Peter Griffin</option>
     <option value="Lois">Lois Griffin</option>
@@ -107,6 +110,7 @@ This will produce the following result:
     <option value="Evil Monkey">Evil Monkey</option>
     <option value="Herbert">John Herbert</option>    
 </select>
+</div>
 
 The selected entry will be shown on top of the HTML element. When you open the option list, you will see, that all the options are shown with a radio button in front of it. That's because the original select was a single selection element.
 
@@ -132,6 +136,7 @@ Let's try it out:
 </select>
 {% endhighlight %}
 
+<div>
 <select class="basicSelect" name="character2" multiple="multiple">
     <option value="Peter">Peter Griffin</option>
     <option value="Lois">Lois Griffin</option>
@@ -144,6 +149,7 @@ Let's try it out:
     <option value="Evil Monkey">Evil Monkey</option>
     <option value="Herbert">John Herbert</option> 
 </select>
+</div>
 
 That was easy, wasn't it? How about we add some complexity? What about `<optgroup>`? Are they supported? Well yes of course they are:
 
@@ -168,6 +174,7 @@ That was easy, wasn't it? How about we add some complexity? What about `<optgrou
 </select>
 {% endhighlight %}
 
+<div>
 <select class="basicSelect" name="character3" multiple="multiple">
     <optgroup label="The Griffins">
         <option value="Peter">Peter Griffin</option>
@@ -184,6 +191,7 @@ That was easy, wasn't it? How about we add some complexity? What about `<optgrou
     <option value="Evil Monkey">Evil Monkey</option>
     <option value="Herbert">John Herbert</option>    
 </select>
+</div>
 
 ## More data sources
 
@@ -351,6 +359,7 @@ $(function() {
 </script>
 {% endhighlight %}
 
+<div>
 <select id="my-verylong-select" name="character5" style="width: 300px">
     <option value="Peter">Peter Griffin</option>
     <option value="Lois">Lois Griffin</option>
@@ -384,6 +393,7 @@ $(function() {
     <option value="Jeffrey">Jeffrey</option>
     <option value="Carl">Carl</option>
 </select>
+</div>
 
 ### Allowing to (de-)select all at once
 
@@ -409,6 +419,7 @@ $(function() {
 </script>
 {% endhighlight %}
 
+<div>
 <select id="my-multiselect-all" name="character6" multiple="multiple">
     <option value="Peter">Peter Griffin</option>
     <option value="Lois">Lois Griffin</option>
@@ -416,6 +427,7 @@ $(function() {
     <option value="Meg">Meg Griffin</option>
     <option value="Stewie">Stewie Griffin</option>
 </select>
+</div>
 
 ### Allowing empty selections for single selects
 
@@ -450,6 +462,7 @@ $(function() {
 
 See the difference for yourself
 
+<div>
 <select class="basicSelect" name="character7">
     <option value="Peter">Peter Griffin</option>
     <option value="Lois">Lois Griffin</option>
@@ -457,7 +470,9 @@ See the difference for yourself
     <option value="Meg">Meg Griffin</option>
     <option value="Stewie">Stewie Griffin</option>
 </select>
+</div>
 
+<div>
 <select id="null-allowed-select" name="character8">   
     <option value="Peter">Peter Griffin</option>
     <option value="Lois">Lois Griffin</option>
@@ -465,6 +480,7 @@ See the difference for yourself
     <option value="Meg">Meg Griffin</option>
     <option value="Stewie">Stewie Griffin</option>
 </select>
+</div>
 
 
 ### Overriding the default labels
@@ -503,6 +519,7 @@ $(function() {
 </script>
 {% endhighlight %}
 
+<div>
 <select id="default-texts" name="character9" multiple>
     <optgroup label="The Griffins">
         <option value="Peter">Peter Griffin</option>
@@ -519,7 +536,9 @@ $(function() {
     <option value="Evil Monkey">Evil Monkey</option>
     <option value="Herbert">John Herbert</option>
 </select>
+</div>
 
+<div>
 <select id="custom-texts" name="character10" multiple>   
     <optgroup label="The Griffins">
         <option value="Peter">Peter Griffin</option>
@@ -536,6 +555,7 @@ $(function() {
     <option value="Evil Monkey">Evil Monkey</option>
     <option value="Herbert">John Herbert</option>
 </select>
+</div>
 
 
 ## Proper positioning of the option popup
